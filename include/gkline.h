@@ -1,20 +1,19 @@
 /*
  * gkline.h
  *
- *  Created on: 2016/01/22
- *      Author: makitaku
+ *  Created on: 2016/01/24
+ *      Author: tmakimoto
  */
 
-#ifndef GKLINE_H_
-#define GKLINE_H_
-
-#include "gkdirection.h"
+#ifndef INCLUDE_GKLINE_H_
+#define INCLUDE_GKLINE_H_
 
 namespace gk {
 
 template<typename Line>
-direction<geometry_traits<Line>::Dimension> direction_of(const Line& l);
+typename vector_traits<typename geometry_traits<Line>::vector_type>::direction direction_of(
+		const Line&);
 
 }  // namespace gk
 
-#endif /* GKLINE_H_ */
+#endif /* INCLUDE_GKLINE_H_ */

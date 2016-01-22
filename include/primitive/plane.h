@@ -8,38 +8,9 @@
 #ifndef PRIMITIVE_PLANE_H_
 #define PRIMITIVE_PLANE_H_
 
-#include "../gkdirection.h"
-#include "../gksurface.h"
+#include "../gkvector.h"
 
 namespace gk {
-
-//template<typename T>
-//struct plane_parameter {
-//	typedef T value_type;
-//	value_type u;
-//	value_type v;
-//
-//	plane_parameter(const value_type& x, const value_type& y) :
-//			u(x), v(y) {
-//	}
-//
-//	~plane_parameter() {
-//
-//	}
-//
-//	const value_type& operator[](size_t n) const {
-//		return (n == GK::X) ? this->u : this->v;
-//	}
-//
-//	value_type& operator[](size_t n) {
-//		return (n == GK::X) ? this->u : this->v;
-//	}
-//};
-//
-//template<typename T>
-//plane_parameter<T> make_plane_parameter(const T& u, const T& v) {
-//	return plane_parameter<T>(u, v);
-//}
 
 /**
  * @brief This class represents plane.@n
@@ -59,7 +30,7 @@ public:
 
 	static const size_t Dimension = vector_traits<Vector>::Dimension;
 
-	typedef direction<Dimension> direction_type;
+	typedef typename vector_traits<Vector>::direction_type direction_type;
 
 public:
 
@@ -107,7 +78,8 @@ public:
 	plane(const vector_type& first, const vector_type& second,
 			const vector_type& third) :
 			ref_(first), normal_(
-					cross<Vector>(normalize(second - first),
+					cross<direction_type, Vector, Vector>(
+							normalize(second - first) / norm(second - first),
 							normalize(third - first))) {
 	}
 
