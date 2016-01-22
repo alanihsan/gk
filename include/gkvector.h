@@ -8,12 +8,7 @@
 #ifndef GKVECTOR_H_
 #define GKVECTOR_H_
 
-//#include "vector/vector.h"
-//#include "vector/vector_operation.h"
-//#include "vector/affine.h"
-//#include "vector/vector_impl.tcc"
-
-#include "gktype_traits.h"
+#include "gkdef.h"
 #include "gkfunctional.h"
 
 #include <numeric>

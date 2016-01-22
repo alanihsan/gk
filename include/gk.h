@@ -19,8 +19,8 @@ namespace gk {
 /**
  * @brief Namespace about implementations.
  */
-namespace impl {
-}  // namespace impl
+namespace inner {
+}  // namespace inner
 
 }  // namespace gk
 

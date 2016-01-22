@@ -41,7 +41,7 @@ template<typename Vector>
 std::pair<bool, Vector> intersect(const std::pair<Vector, Vector>& l,
 		const std::pair<Vector, Vector>& m);
 
-namespace impl {
+namespace inner {
 
 template<typename Line>
 bool is_intersect_line_aabb_impl(const Line& line,
@@ -264,11 +264,11 @@ std::pair<Vector, bool> intersect_segment_segment_impl(const Vector& a1,
 
 }
 
-} // namespace impl
+} // namespace inner
 
 template<typename Geometry1, typename Geometry2>
 struct intersect_result {
-	typedef typename impl::intersect_result_impl<Geometry1, Geometry2,
+	typedef typename inner::intersect_result_impl<Geometry1, Geometry2,
 			typename geometry_traits<Geometry1>::geometry_category,
 			typename geometry_traits<Geometry2>::geometry_category>::type type;
 };
@@ -282,7 +282,7 @@ struct intersect_result {
 template<typename Geometry1, typename Geometry2>
 typename intersect_result<Geometry1, Geometry2>::type intersect(
 		const Geometry1& a, const Geometry2& b) {
-	return impl::intersect_impl(a, b,
+	return inner::intersect_impl(a, b,
 			geometry_traits<Geometry1>::geometry_category(),
 			geometry_traits<Geometry2>::geometry_category(),
 			requirement<
@@ -297,7 +297,7 @@ std::pair<Vector, bool> intersect_segment_segment(const Vector& a1,
 		const Vector& a2, const Vector& b1, const Vector& b2,
 		const Tolerance& epsilon = std::numeric_limits<
 				vector_traits<Vector>::value_type>::epsilon()) {
-	return impl::intersect_segment_segment_impl(a1, a2, b1, b2, epsilon,
+	return inner::intersect_segment_segment_impl(a1, a2, b1, b2, epsilon,
 			dimension<vector_traits<Vector>::Dimension>());
 }
 

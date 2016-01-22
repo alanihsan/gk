@@ -70,16 +70,6 @@ public:
 			ref_(pair.first), direction_(pair.second - pair.first) {
 	}
 
-//	template<typename InputIterator>
-//	line(InputIterator first, InputIterator last) :
-//			ref_(), direction_() {
-//
-//		check_condition(
-//				is_same<
-//						typename std::iterator_traits<InputIterator>::value_type,
-//						vector_type>::type());
-//	}
-
 	~line() {
 	}
 
@@ -91,18 +81,18 @@ public:
 		return this->ref_;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	const direction_type& direction() const {
 		return this->direction_;
 	}
 
 	/**
-	 * @deprecated
-	 * @return
+	 *
+	 * @param d
 	 */
-	direction_type& direction() {
-		return this->direction_;
-	}
-
 	void direction(const direction_type& d) {
 		this->direction_ = d;
 	}
@@ -114,7 +104,7 @@ public:
 	 * 		\mathbf{r}(t) = \mathbf{p} + t\mathbf{d}
 	 * @f]
 	 *
-	 * @tparam Parameter Type of Parameter.
+	 * @tparam Parameter Type of a parameter.
 	 * @param t Parameter.
 	 * @return Position vector.
 	 */

@@ -50,13 +50,6 @@ typename geometry_traits<Geometry>::parameter nearest(const Geometry& a,
 	return impl::nearest(a, v, geometry_traits<Geometry>::geometry_category());
 }
 
-//template<typename Vector>
-//typename geometry_traits<line<Vector> >::parameter nearest(
-//		const line<Vector>& line, const Vector& p) {
-//	const direction<Vector> u = line.direction();
-//	const Vector r = p - line.reference();
-//	return dot(r, u);
-//}
 template<typename Vector>
 Vector nearest(const line<Vector>& line, const Vector& v) {
 	const direction<vector_traits<Vector>::Dimension> u = line.direction();
@@ -66,38 +59,12 @@ Vector nearest(const line<Vector>& line, const Vector& v) {
 	return dot(r, u) * u - r;
 }
 
-//template<typename Vector>
-//typename geometry_traits<segment<Vector> >::parameter nearest(
-//		const segment<Vector>& segment, const Vector& p) {
-//
-//	const typename geometry_traits<line<Vector> >::parameter t = nearest(
-//			line<Vector>(segment[GK::StartEdge], segment[GK::EndEdge]), p);
-//
-//	const typename vector_traits<Vector>::value_type L = norm(
-//			segment[GK::EndEdge] - segment[GK::StartEdge]);
-//
-//	return t / L;
-//}
 template<typename Vector>
 Vector nearest(const segment<Vector>& segment, const Vector& r) {
 	return nearest(line<Vector>(segment[GK::StartEdge], segment[GK::EndEdge]),
 			r);
 }
 
-//template<typename Vector>
-//typename geometry_traits<plane<Vector> >::parameter nearest(
-//		const plane<Vector>& plane, const Vector& p) {
-//
-//	const direction<Vector> n = plane.normal();
-//	const Vector r = plane.reference() - p;
-//
-//	typedef vector_traits<Vector> vtraits;
-//
-//	const Vector q = p + vtraits::dot(r, n) * n - plane.reference();
-//
-//	return make_plane_parameter(vtraits::dot(q, plane.u_direction()),
-//			vtraits::dot(q, plane.v_direction()));
-//}
 template<typename Vector>
 Vector nearest(const plane<Vector>& plane, const Vector& r) {
 
@@ -125,38 +92,6 @@ Vector nearest(const plane<Vector>& plane, const Vector& r) {
  *
  * @return Pair of the distance parameters between 2 lines.
  */
-//template<typename Vector>
-//std::pair<typename geometry_traits<line<Vector> >::parameter,
-//		typename geometry_traits<line<Vector> >::parameter> nearest_between(
-//		const line<Vector>& l, const line<Vector>& m) {
-//
-//	typedef typename vector_traits<Vector>::value_type value_type;
-//
-//	const direction<Vector> u = l.direction();
-//	const direction<Vector> v = m.direction();
-//
-//	const typename direction<Vector>::value_type alpha = dot(u, v);
-////	const typename direction<Vector>::value_type beta = alpha
-////			* alpha- GK_FLOAT_ONE;
-//	const typename direction<Vector>::value_type beta = GK_FLOAT_ONE
-//			- alpha * alpha;
-//
-//	const Vector r = l.reference() - m.reference();
-//
-//	if (beta == GK_FLOAT_ZERO) {
-//		/* parallel */
-//		return std::make_pair(value_type(GK_FLOAT_ZERO), dot(r, v));
-//
-//	} else {
-//		/* no parallel */
-////		const value_type s = (dot(r, u) - alpha * dot(r, v)) / beta; //dot(r, u - alpha * v) / beta;
-////		const value_type t = dot(r, v) + alpha * s;
-//		const value_type s = (alpha * dot(r, v) - dot(r, u)) / beta;
-//		const value_type t = dot(r, v) + alpha * s;
-//
-//		return std::make_pair(s, t);
-//	}
-//}
 template<typename Vector>
 std::pair<typename vector_traits<Vector>::value_type,
 		typename vector_traits<Vector>::value_type> nearest_between(
@@ -187,34 +122,6 @@ std::pair<typename vector_traits<Vector>::value_type,
 	}
 }
 
-//template<typename Vector>
-//std::pair<typename geometry_traits<line<Vector> >::parameter,
-//		typename geometry_traits<plane<Vector> >::parameter> nearest_between(
-//		const line<Vector>& a, const plane<Vector>& b) {
-//
-//	const direction<Vector> u = a.direction();
-//	const direction<Vector> n = b.normal();
-//
-//	typedef typename geometry_traits<line<Vector> >::parameter line_parameter;
-//
-//	if (dot(u, n) == GK_FLOAT_ZERO) {
-//		// The line and the plane are parallel.
-//
-//		const line_parameter t = line_parameter(GK_FLOAT_ZERO);
-//		return std::make_pair(t, nearest(b, a(t)));
-//
-//	} else {
-//		// Not parallel, otherwise intersection.
-//
-//		const line_parameter t = dot(b.reference() - a.reference(), n)
-//				/ (dot(u, n));
-//
-//		const Vector r = a(t) - b.reference();
-//		return std::make_pair(t,
-//				make_plane_parameter(dot(r, b.u_direction()),
-//						dot(r, b.v_direction())));
-//	}
-//}
 template<typename Vector>
 std::pair<typename vector_traits<Vector>::value_type,
 		typename vector_traits<Vector>::value_type> nearest_between(
@@ -245,19 +152,6 @@ std::pair<typename vector_traits<Vector>::value_type,
 	}
 }
 
-//template<typename Vector>
-//std::pair<typename geometry_traits<plane<Vector> >::parameter,
-//		typename geometry_traits<line<Vector> >::parameter> nearest_between(
-//		const plane<Vector>& a, const line<Vector>& b) {
-//
-//	typedef typename geometry_traits<line<Vector> >::parameter line_parameter;
-//	typedef typename geometry_traits<plane<Vector> >::parameter plane_parameter;
-//
-//	const std::pair<plane_parameter, line_parameter> result = nearest_between(b,
-//			a);
-//
-//	return std::make_pair(result.second, result.first);
-//}
 template<typename Vector>
 std::pair<typename vector_traits<Vector>::value_type,
 		typename vector_traits<Vector>::value_type> nearest_between(
@@ -464,7 +358,7 @@ template<typename Vector>
 bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
 		dimension<GK::GK_2D>) {
 	std::pair<line<Vector>, line<Vector> >
-	x_lines=std::make_pair(line<Vector>(boundary.min()),);
+	x_lines=std::make_pair(line<vector>(boundary.min()),);
 	std::pair<line<Vector>, line<Vector> > y_lines;
 }
 
@@ -483,7 +377,7 @@ bool test_intersect(const line<Vector>& l, const aabb<Vector>& boundary) {
 
 	typedef vector_traits<Vector>::value_type value_type;
 
-//	typename line<Vector>::parameter t_min;
+//	typename line<vector>::parameter t_min;
 	value_type t_min;
 	for (size_t i = 0; i < vector_traits<Vector>::Dimension; ++i) {
 		const line<Vector> min_line(boundary.min(), basis[i]);

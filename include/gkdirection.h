@@ -124,7 +124,7 @@ vector<vector_traits<Vector>::Dimension, typename direction<Vector>::value_type>
 	return r;
 }
 
-namespace impl {
+namespace inner {
 
 template<typename Vector>
 bool is_equal_impl(const direction<Vector>& u, const direction<Vector>& v,
@@ -138,11 +138,11 @@ bool is_equal_impl(const direction<Vector>& u, const direction<Vector>& v,
 	return (u[GK::X] == v[GK::X] && u[GK::Y] == v[GK::Y] && u[GK::Z] == v[GK::Z]);
 }
 
-}  // namespace impl
+}  // namespace inner
 
 template<typename Vector>
 bool operator==(const direction<Vector>& u, const direction<Vector>& v) {
-	return impl::is_equal_impl(u, v,
+	return inner::is_equal_impl(u, v,
 			dimension<vector_traits<Vector>::Dimension>());
 }
 
@@ -167,7 +167,7 @@ typename direction<Vector>::value_type norm(const direction<Vector>&) {
 template<typename Vector>
 Vector operator*(const typename vector_traits<Vector>::value_type& alpha,
 		const direction<vector_traits<Vector>::Dimension>& u) {
-//	return impl::multiply_scalar_direction(alpha, u,
+//	return inner::multiply_scalar_direction(alpha, u,
 //			dimension<direction<Vector>::Dimension>());
 	Vector r;
 	std::transform(begin(u), end(u), begin(r),
