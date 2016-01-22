@@ -311,11 +311,11 @@ bspline<Vector> subdivide(const bspline<Vector>& x,
 }
 
 template<typename Vector, typename Parameter>
-segment<Vector, Parameter> linear(const bspline<Vector, Parameter>& x,
+segment<Vector> linear(const bspline<Vector>& x,
 		typename vector_traits<Vector>::value_type& max_distance) {
 
 	max_distance = typename vector_traits<Vector>::value_type(GK_FLOAT_ZERO);
-	typedef typename geometry_traits<bspline<Vector, Parameter> >::parameter parameter;
+	typedef typename bspline<Vector>::parameter parameter;
 	std::pair<parameter, parameter> D = x.domain();
 	bspline<Vector> y = x;
 	y.subdivide(D.first, GK::Lower);

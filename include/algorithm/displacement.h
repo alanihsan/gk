@@ -12,7 +12,7 @@
 
 namespace gk {
 
-namespace impl {
+namespace inner {
 
 template<typename Geometry1, typename Geometry2>
 struct displacement_result_impl {
@@ -46,11 +46,11 @@ typename displacement_result_impl<Line, Line>::type diplacement_impl(
 			vector_traits<typename geometry_traits<Line>::vector_type>::dimension_category());
 }
 
-} // namespace impl
+} // namespace inner
 
 template<typename Geometry1, typename Geometry2>
 struct displacement_result {
-	typedef typename impl::displacement_result_impl<Geometry1, Geometry2>::type type;
+	typedef typename inner::displacement_result_impl<Geometry1, Geometry2>::type type;
 };
 
 /**

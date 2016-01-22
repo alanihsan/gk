@@ -9,7 +9,6 @@
 #define BSPLINE_ALGORITHM_H_
 
 #include "bspline.h"
-#include "../gkprimitive.h"
 
 namespace gk {
 

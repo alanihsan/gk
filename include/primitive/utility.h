@@ -18,7 +18,7 @@ namespace gk {
  * @param
  * @return
  */
-namespace impl {
+namespace inner {
 template<typename Vector, typename Tolerance>
 bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
 		const Tolerance& epsilon, dimension<GK::GK_2D>) {
@@ -44,7 +44,7 @@ bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
 			& (std::abs(u[GK::Z] - v[GK::Z]) < epsilon);
 }
 
-}  // namespace impl
+}  // namespace inner
 
 template<typename Vector,
 		typename Tolerance = typename vector_traits<Vector>::value_type>
@@ -52,7 +52,7 @@ bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
 		const Tolerance& epsilon = std::numeric_limits<
 				typename vector_traits<Vector>::value_type>::epsilon()) {
 
-	return impl::is_parallel(u, v, epsilon,
+	return inner::is_parallel(u, v, epsilon,
 			dimension<vector_traits<Vector>::Dimension>());
 }
 

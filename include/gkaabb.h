@@ -138,7 +138,7 @@ aabb<Vector> operator&(const aabb<Vector>& a, const aabb<Vector>& b);
 template<typename Vector>
 aabb<Vector> operator|(const aabb<Vector>& a, const aabb<Vector>& b);
 
-namespace impl {
+namespace inner {
 
 template<typename Vector>
 bool is_intersect_impl(const aabb<Vector>& a, const aabb<Vector>& b,
@@ -174,12 +174,12 @@ bool is_intersect_impl(const aabb<Vector>& a, const aabb<Vector>& b,
 	return (ux_flag & uy_flag & uz_flag & vx_flag & vy_flag & vz_flag);
 }
 
-}  // namespace impl
+}  // namespace inner
 
 template<typename Vector, typename Tolerance>
 bool is_intersect(const aabb<Vector>& a, const aabb<Vector>& b,
 		const Tolerance& epsilon) {
-	return impl::is_intersect_impl(a, b, epsilon,
+	return inner::is_intersect_impl(a, b, epsilon,
 			dimension<vector_traits<Vector>::Dimension>());
 }
 

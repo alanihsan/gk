@@ -51,13 +51,13 @@ template<typename Curve>
 bool is_closed(const Curve& curve);
 
 /**
- * @brief Returns a domain of a curve.
- * @param curve
- * @return
- */
-template<typename Curve>
-std::pair<typename curve_traits<Curve>::parameter,
-		typename curve_traits<Curve>::parameter> domain(const Curve& curve);
+// * @brief Returns a domain of a curve.
+// * @param curve
+// * @return
+// */
+//template<typename Curve>
+//std::pair<typename curve_traits<Curve>::parameter,
+//		typename curve_traits<Curve>::parameter> domain(const Curve& curve);
 
 /**
  * @brief

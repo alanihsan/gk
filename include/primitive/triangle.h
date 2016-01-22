@@ -110,14 +110,14 @@ private:
  * @param a
  * @return
  *
- * @see impl::direction_of_triangle()
+ * @see inner::direction_of_triangle()
  */
 template<typename Vector>
 direction<Vector> direction_of(const triangle<Vector>& a) {
 	return cross<direction<Vector> >()(normalize(a.u()), normalize(a.v()));
 }
 
-namespace impl {
+namespace inner {
 
 /**
  * @brief Calculates the area of the triangle made by three points in 2D.
@@ -150,7 +150,7 @@ AreaValue area_of_triangle(const Vector& first, const Vector& second,
 
 }
 
-}  // namespace impl
+}  // namespace inner
 
 template<typename T, typename AreaValue>
 struct area {
