@@ -1,0 +1,12 @@
+/**
+ @mainpage
+ @section introduction_sec Introduction
+ GeomKernel is the library to calculate geometry.
+
+ @section license_sec License
+ GeomKernel is open source library. The license of this library is BSD 3-Clause.
+
+ @page object_concept_page
+ @page test_page
+
+ */
