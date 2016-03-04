@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Compiled Object files
 *.slo
 *.lo
@@ -28,3 +29,8 @@
 *.app
 *.project
 *.cproject
+=======
+/.settings/
+/.cproject
+/.project
+>>>>>>> branch 'master' of git@github.com:tkymakimoto/gk.git
