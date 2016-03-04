@@ -220,6 +220,19 @@ public:
 	}
 };
 
+template<size_t DimensionSize, typename T>
+struct vector_traits<vector<DimensionSize, T> > {
+	typedef T value_type; ///< Type of elements in a vector.
+
+	typedef value_type* iterator;
+	typedef const value_type* const_iterator;
+	typedef std::reverse_iterator<iterator> reverse_iterator;
+	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
+	static const bool IsHomogeneous = false;
+};
+
 template<typename CharT, typename Traits, size_t Dimension, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(
 		std::basic_ostream<CharT, Traits>& os, const vector<Dimension, T>& v) {
@@ -275,104 +288,6 @@ vector<Dimension, typename divides_result<T, X>::value_type> operator/(
 	return v * inv_alpha;
 }
 
-/**
- * @brief Direction.
- *
- * @author Takuya Makimoto
- * @date 2015
- */
-/*template<typename Vector>*/
-template<size_t DimensionSize>
-class direction {
-public:
-	typedef gkfloat value_type;
-	typedef const value_type* const_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const size_t Dimension = DimensionSize;/*vector_traits<Vector>::Dimension;*/
-	static const size_t ElementSize = DimensionSize;/*vector_traits<Vector>::Dimension; //dimension_category::Size;*/
-
-private:
-
-	/**
-	 * @brief Normalize a vector.
-	 * @param v
-	 * @param d
-	 */
-	template<typename Vector>
-	static void normalize_(const Vector& v, direction& d) {
-		std::transform(gk::begin(v), gk::end(v), d.x_,
-				std::bind2nd(
-						divides<value_type,
-								typename vector_traits<Vector>::value_type>(),
-						value_type(GK_FLOAT_ONE) / norm(v)));
-	}
-
-public:
-	/**
-	 * @brief Default constructor.
-	 */
-	direction() :
-			x_() {
-		std::fill(this->x_, this->x_ + Dimension, value_type(GK_FLOAT_ZERO));
-	}
-
-	/**
-	 * @brief Copy constructor.
-	 * @param other
-	 */
-	direction(const direction& other) :
-			x_() {
-		std::copy(other.x_, other.x_ + ElementSize, this->x_);
-	}
-
-	template<typename Vector>
-	explicit direction(const Vector& v) :
-			x_() {
-		normalize_(v, *this);
-	}
-
-	~direction() {
-	}
-
-	value_type operator[](const size_t n) const {
-		return this->x_[n];
-	}
-
-	direction& operator=(const direction& u) {
-		if (&u == this) {
-			return *this;
-		}
-
-		std::copy(u.x_, u.x_ + ElementSize, this->x_);
-		return *this;
-	}
-
-	const_iterator begin() const {
-		return this->x_;
-	}
-
-	const_iterator end() const {
-		return this->x_ + Dimension;
-	}
-
-	const_reverse_iterator rbegin() const {
-		return std::reverse_iterator<const_iterator>(this->end());
-	}
-
-	const_reverse_iterator rend() const {
-		return std::reverse_iterator<const_iterator>(this->begin());
-	}
-
-	const value_type* data() const {
-		return this->x_;
-	}
-
-private:
-//	value_type x_[ElementSize];
-	gkfloat x_[ElementSize];
-};
-
 template<size_t Dimension, typename T>
 vector<Dimension, typename direction<Dimension>::value_type> operator+(
 		const direction<Dimension>& u, const direction<Dimension>& v) {
@@ -383,28 +298,6 @@ vector<Dimension, typename direction<Dimension>::value_type> operator+(
 	return r;
 }
 
-template<size_t Dimension>
-bool operator==(const direction<Dimension>& u, const direction<Dimension>& v) {
-	return std::equal(u.begin(), u.end(), v.begin());
-}
-
-template<size_t Dimension>
-bool operator!=(const direction<Dimension>& u, const direction<Dimension>& v) {
-	return !(u == v);
-}
-
-template<typename T>
-direction<geometry_traits<T>::Dimension> direction_of(const T& a);
-
-template<typename Vector>
-direction<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
-	return direction<vector_traits<Vector>::Dimension>(v);
-}
-
-template<size_t Dimension>
-typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
-	return direction<Dimension>::value_type(GK_FLOAT_ONE);
-}
 template<size_t Dimension, typename T>
 vector<Dimension, T> operator*(const T& alpha, const direction<Dimension>& u) {
 	vector<Dimension, T> v;
@@ -420,37 +313,6 @@ template<size_t Dimension, typename T>
 vector<Dimension, T> operator*(const direction<Dimension>& u, const T& alpha) {
 	return alpha * u;
 }
-
-template<size_t DimensionSize, typename T>
-struct vector_traits<vector<DimensionSize, T> > {
-	typedef T value_type; ///< Type of elements in a vector.
-
-	typedef value_type* iterator;
-	typedef const value_type* const_iterator;
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
-	static const bool IsHomogeneous = false;
-
-	typedef direction<Dimension> direction;
-};
-
-template<size_t DimensionSize>
-struct vector_traits<direction<DimensionSize> > {
-	typedef direction<DimensionSize> value_type; ///< Type of elements in a vector.
-
-	typedef value_type* iterator;
-	typedef const value_type* const_iterator;
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
-	static const bool IsHomogeneous = false;
-
-	typedef direction<Dimension> direction;
-};
-
 } // namespace gk
 
 #endif /* INCLUDE_VECTOR_VECTOR_H_ */

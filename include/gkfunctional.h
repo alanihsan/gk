@@ -30,6 +30,36 @@ struct multiplies_result<long double, long double> {
 	typedef long double value_type;
 };
 
+template<>
+struct multiplies_result<float, double> {
+	typedef float value_type;
+};
+
+template<>
+struct multiplies_result<double, float> {
+	typedef float value_type;
+};
+
+template<>
+struct multiplies_result<float, long double> {
+	typedef float value_type;
+};
+
+template<>
+struct multiplies_result<double, long double> {
+	typedef double value_type;
+};
+
+template<>
+struct multiplies_result<long double, float> {
+	typedef float value_typ;
+};
+
+template<>
+struct multiplies_result<long double, double> {
+	typedef double value_type;
+};
+
 template<typename T1, typename T2>
 struct divides_result {
 	typedef void value_type;
@@ -48,6 +78,36 @@ struct divides_result<double, double> {
 template<>
 struct divides_result<long double, long double> {
 	typedef long double value_type;
+};
+
+template<>
+struct divides_result<float, double> {
+	typedef float value_type;
+};
+
+template<>
+struct divides_result<double, float> {
+	typedef float value_type;
+};
+
+template<>
+struct divides_result<float, long double> {
+	typedef float value_type;
+};
+
+template<>
+struct divides_result<double, long double> {
+	typedef double value_type;
+};
+
+template<>
+struct divides_result<long double, float> {
+	typedef float value_type;
+};
+
+template<>
+struct divides_result<long double, double> {
+	typedef double value_type;
 };
 
 template<typename T1, typename T2, typename Result = typename multiplies_result<

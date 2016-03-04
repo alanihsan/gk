@@ -9,6 +9,7 @@
 #define PRIMITIVE_PLANE_H_
 
 #include "../gkvector.h"
+#include "../gkgeometry.h"
 
 namespace gk {
 
@@ -23,14 +24,14 @@ namespace gk {
  * @date 2015
  */
 template<typename Vector>
-class plane/*: public surface<plane_tag, Vector, Parameter>*/{
+class plane: public geometry<plane_tag, Vector> {
 public:
 	typedef Vector vector_type;
 	typedef typename vector_traits<Vector>::value_type value_type;
 
 	static const size_t Dimension = vector_traits<Vector>::Dimension;
 
-	typedef typename vector_traits<Vector>::direction_type direction_type;
+	typedef direction<Dimension> direction_type;
 
 public:
 
@@ -77,10 +78,7 @@ public:
 	 */
 	plane(const vector_type& first, const vector_type& second,
 			const vector_type& third) :
-			ref_(first), normal_(
-					cross<direction_type, Vector, Vector>(
-							normalize(second - first) / norm(second - first),
-							normalize(third - first))) {
+			ref_(first), normal_(normal(second - first, third - first)) {
 	}
 
 	/**
@@ -117,17 +115,6 @@ public:
 		return this->normal_;
 	}
 
-//	/**
-//	 * @brief Computes the position projected to this plane in @a direction.
-//	 * @param position
-//	 * @param direction
-//	 * @return
-//	 */
-//	gkvector<GK::GK_2D> project(const gkvector<GK::GK_3D>& position,
-//			const gkdirection<GK::GK_3D>& direction) const {
-//		return gkinvalid();
-//	}
-
 	/**
 	 * @brief Computes the @f$u@f$ direction.
 	 * @return
@@ -144,25 +131,8 @@ public:
 		return this->v_direction_();
 	}
 
-//	direction_type operator[](size_t n) const {
-//
-//	}
-
-//	/**
-//	 * @brief Computes the position in the global system.
-//	 *
-//	 * @param u u-coordinate on this plane. (Local coordinates)
-//	 * @param v v-coordinate on this plane. (Local coordinates)
-//	 * @return
-//	 */
-//	template<typename Parameter>
-//	vector_type operator()(const Parameter& t) const {
-//		return this->ref_ + t[GK::U] * this->u_direction_()
-//				+ t[GK::V] * this->v_direction_();
-//	}
-
 	/**
-	 * @brief Compute a position at @f$(s, t)@f$.
+	 * @brief Computes a position at @f$(s, t)@f$.
 	 *
 	 * @tparam Parameter Type of parameter.
 	 * @param s u-coordinate on this plane. (Local coordinates)
@@ -173,10 +143,6 @@ public:
 	vector_type operator()(const Parameter& s, const Parameter& t) const {
 		return this->ref_ + s * this->u_direction_() + t * this->v_direction_();
 	}
-
-//	bool operator()(const vector_type& p) const {
-//		return dot(p - this->ref_, this->normal_) >= parameter(GK_FLOAT_ZERO);
-//	}
 
 	plane& operator=(const plane& rhs) {
 		if (&rhs == this) {
@@ -189,47 +155,43 @@ public:
 	}
 
 private:
-	vector_type ref_;
-	direction_type normal_;
+	vector_type ref_; ///< The reference position of this plane.
+	direction_type normal_; ///< The normal vector of this plane.
 
 private:
 	direction_type u_direction_() const {
-		if (this->normal_[GK::X] == direction_type::value_type(GK_FLOAT_ZERO)) {
-//			return const_direction<vector_type>()[GK::X];
+		if (this->normal_[GK::X]
+				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
 			return basis<Vector>()[GK::X];
 		}
 
-		if (this->normal_[GK::Y] == direction_type::value_type(GK_FLOAT_ZERO)) {
+		if (this->normal_[GK::Y]
+				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
 			return basis<Vector>()[GK::Y];
 		}
 
-		if (this->normal_[GK::Z] == direction_type::value_type(GK_FLOAT_ZERO)) {
+		if (this->normal_[GK::Z]
+				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
 			return basis<Vector>()[GK::Z];
 		}
 
-		return direction_type(
-				vector_type(value_type(-this->normal_[GK::Y]),
-						value_type(this->normal_[GK::X],
-								value_type(GK_FLOAT_ZERO))));
-
-//		typename direction_type::const_iterator p = std::find(
-//				this->normal_.begin(), this->normal_.end(),
-//				direction_type::value_type(GK_FLOAT_ZERO));
-//		if (p != this->normal_.end()) {
-//			return basis<Vectpr>()[std::distance(this->normal_.begin(), p)];
-//		}
-//
-//		direction_type d = this->normal_;
-
+		vector_type u;
+		u[GK::X] = value_type(-this->normal_[GK::Y]);
+		u[GK::Y] = value_type(this->normal_[GK::X]);
+		u[GK::Z] = value_type(GK_FLOAT_ZERO);
+		return direction_type(u);
 	}
 
 	direction_type v_direction_() const {
-		return cross(this->normal_, this->u_direction_());
+		const value_type unit = value_type(GK_FLOAT_ONE);
+		return normal_direction(unit * this->normal_,
+				unit * this->u_direction_());
 	}
 };
 
 template<typename Vector>
-direction<Vector> direction_of(const plane<Vector>& x) {
+direction<vector_traits<Vector>::Dimension> direction_of(
+		const plane<Vector>& x) {
 	return x.normal();
 }
 

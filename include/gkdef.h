@@ -19,10 +19,6 @@
 
 #include "config/gkconfig.h"
 
-//#ifdef GK_EIGEN_ENABLED
-//#   include <Eigen/Core>
-//#endif
-
 /*
  * Integer Value Type．
  */
@@ -72,10 +68,6 @@ typedef gkuint gksize;
 typedef GK_FLOAT_TYPE gkfloat;
 #undef GK_FLOAT_TYPE
 
-//typedef gkfloat gklength; ///< Length value_type.
-typedef gkfloat gkangle; ///< Angle value_type.
-//typedef gkfloat gkparam; ///< Non-dimensional value_type.
-
 typedef bool gkselection;
 
 typedef bool gkminmax;
@@ -85,24 +77,6 @@ const bool GK_Max = true;
 #define GK_FLOAT_ZERO 0.0
 #define GK_FLOAT_ONE 1.0
 #define GK_FLOAT_NEGATIVE_ONE -1.0
-
-struct gkundefined {
-};
-
-/**
- * @brief Invalid object.
- *
- * @author Takuya Makimoto
- * @date 2015
- */
-template<typename T>
-struct gkinvalid {
-};
-
-template<typename T>
-gkinvalid<T> invalid_geometry(const T&) {
-	return gkinvalid<T>();
-}
 
 namespace gk {
 

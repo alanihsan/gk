@@ -69,16 +69,16 @@ struct sphere_tag: public surface_tag {
 struct free_surface_tag: public surface_tag {
 };
 
-template<typename Category, typename Vector, typename Parameter>
+template<typename Category, typename Vector>
 struct geometry;
 
 #define GK_GEOMETRY_BASE_TEMPLATE_CLASS(category) \
-	template<typename Vector,typename Parameter> \
-	struct geometry<category, Vector, Parameter> { \
+	template<typename Vector> \
+	struct geometry<category, Vector> { \
 		typedef category geometry_category; \
 		typedef Vector vector_type; \
-		typedef Parameter parameter; \
 	};
+
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(direction_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(line_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(ray_tag)

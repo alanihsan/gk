@@ -187,6 +187,11 @@ template<typename Geometry>
 aabb<typename geometry_traits<Geometry>::vector_type> make_aabb(
 		const Geometry& x);
 
+template<typename Vector>
+aabb<Vector> make_boundary(const Vector& a, const Vector& b) {
+	return aabb<Vector>(a, b);
+}
+
 }  // namespace gk
 
 //template<GK_Dimension DimensionNumber>

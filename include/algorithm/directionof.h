@@ -17,21 +17,21 @@ typename vector_traits<typename geometry_traits<Geometry>::vector_type>::directi
 		const Geometry& x, Category);
 
 template<typename Geometry>
-typename vector_traits<typename geometry_traits<Geometry>::vector_type>::direction direction_of(
+direction<geometry_traits<Geometry>::Dimension> direction_of(
 		const Geometry& x) {
 	return gk_impl_direction_of(x,
 			geometry_traits<Geometry>::geometry_category());
 }
 
 template<typename Line>
-typename vector_traits<typename geometry_traits<Line>::vector_type>::direction gk_impl_direction_of(
-		const Line& l, line_tag) {
+direction<geometry_traits<Line>::Dimension> gk_impl_direction_of(const Line& l,
+		line_tag) {
 	typedef typename vector_traits<typename geometry_traits<Line>::vector_type>::value_type value_type;
 	return normalize(l(value_type(GK_FLOAT_ONE)) - l(value_type(GK_FLOAT_ZERO)));
 }
 
 template<typename Plane>
-typename vector_traits<typename geometry_traits<Plane>::vector_type>::direction gk_impl_direction_of(
+direction<geometry_traits<Plane>::Dimension> gk_impl_direction_of(
 		const Plane& plane, plane_tag) {
 	typedef typename geometry_traits<Plane>::vector_type vector_type;
 	typedef typename vector_traits<vector_type>::value_type value_type;

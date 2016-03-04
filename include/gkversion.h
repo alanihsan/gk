@@ -18,7 +18,7 @@
 namespace gk {
 
 /**
- * @brief Version of gk.
+ * @brief The version of gk.
  * @author Takuya Makimoto
  * @date 2015/12/14
  */

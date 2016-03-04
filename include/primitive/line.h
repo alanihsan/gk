@@ -11,6 +11,8 @@
 #include "../gkvector.h"
 #include "../gkcurve.h"
 
+#include <vector>
+
 namespace gk {
 
 /**
@@ -29,14 +31,11 @@ namespace gk {
  * @date 2015/12/01
  */
 template<typename Vector>
-class line/*: public curve<line_tag, Vector,
- typename vector_traits<Vector>::value_type>*/{
+class line: public curve<line_tag, Vector> {
 public:
 	typedef Vector vector_type;
 
 	static const size_t Dimension = vector_traits<Vector>::Dimension;
-//	typedef curve<line_tag, Vector, typename vector_traits<Vector>::value_type> base;
-//	typedef typename base::parameter parameter;
 	typedef direction<Dimension> direction_type;
 
 public:
@@ -84,7 +83,7 @@ public:
 	 *
 	 * @return
 	 */
-	const direction_type& direction() const {
+	const direction_type& tangent_direction() const {
 		return this->direction_;
 	}
 
@@ -92,7 +91,7 @@ public:
 	 *
 	 * @param d
 	 */
-	void direction(const direction_type& d) {
+	void tangent_direction(const direction_type& d) {
 		this->direction_ = d;
 	}
 
@@ -252,7 +251,7 @@ private:
 template<typename Vector>
 direction<vector_traits<Vector>::Dimension> direction_of(
 		const line<Vector>& l) {
-	return l.direction();
+	return l.tangent_direction();
 }
 
 template<typename Vector>
@@ -279,13 +278,13 @@ aabb<Vector> boundary(const segment<Vector>& x) {
 	return aabb<Vector>(x.start(), x.end());
 }
 
-template<typename Vector, typename Parameter = gkfloat>
-class polyline: public curve<curve_tag, Vector, Parameter> {
+template<typename Vector>
+class polyline/*: public curve<curve_tag, Vector>*/{
 public:
 	typedef std::vector<Vector> container_type;
 	typedef Vector vector_type;
 	typedef typename vector_traits<Vector>::value_type value_type;
-	typedef Parameter parameter;
+//	typedef Parameter parameter;
 
 	typedef typename container_type::iterator iterator;
 	typedef typename container_type::const_iterator const_iterator;
@@ -364,7 +363,8 @@ public:
 		return this->X_.rend();
 	}
 
-	polyline subdivide(const parameter& t, gkselection select = GK::Upper) {
+	template<typename Parameter>
+	polyline subdivide(const Parameter& t, gkselection select = GK::Upper) {
 
 	}
 
@@ -376,7 +376,8 @@ public:
 		return this->X_[index];
 	}
 
-	vector_type operator()(const parameter& t) const {
+	template<typename Parameter>
+	vector_type operator()(const Parameter& t) const {
 		std::vector<value_type> L;
 		L.reserve(this->X_.size());
 
@@ -387,9 +388,9 @@ public:
 				L.begin(), L.end(), p);
 
 		const size_t n = std::distance(L.begin(), bound);
-		const parameter u = (*bound - p) / L.back();
+		const Parameter u = (*bound - p) / L.back();
 
-		return (parameter(GK_FLOAT_ONE) - u) * this->X_[n - 1] + u * this->X_[n];
+		return (Parameter(GK_FLOAT_ONE) - u) * this->X_[n - 1] + u * this->X_[n];
 	}
 
 	polyline& operator=(const polyline& rhs) {
@@ -405,6 +406,7 @@ private:
 	container_type X_;
 };
 
-} // namespace gk
+}
+// namespace gk
 
 #endif /* PRIMITIVE_LINE_H_ */

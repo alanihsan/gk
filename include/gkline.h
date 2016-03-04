@@ -10,9 +10,15 @@
 
 namespace gk {
 
+//template<typename Line>
+//typename vector_traits<typename geometry_traits<Line>::vector_type>::direction direction_of(
+//		const Line&);
+
 template<typename Line>
-typename vector_traits<typename geometry_traits<Line>::vector_type>::direction direction_of(
-		const Line&);
+void set_line(Line& l,
+		const typename geometry_traits<Line>::vector_type& reference,
+		const direction<geometry_traits<Line>::Dimension>& u) {
+}
 
 }  // namespace gk
 

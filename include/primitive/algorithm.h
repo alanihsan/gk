@@ -54,8 +54,6 @@ template<typename Vector>
 Vector nearest(const line<Vector>& line, const Vector& v) {
 	const direction<vector_traits<Vector>::Dimension> u = line.direction();
 	const Vector r = v - line.reference();
-	const dot<Vector, direction<vector_traits<Vector>::Dimension>,
-			typename vector_traits<Vector>::value_type> dot;
 	return dot(r, u) * u - r;
 }
 
@@ -92,35 +90,35 @@ Vector nearest(const plane<Vector>& plane, const Vector& r) {
  *
  * @return Pair of the distance parameters between 2 lines.
  */
-template<typename Vector>
-std::pair<typename vector_traits<Vector>::value_type,
-		typename vector_traits<Vector>::value_type> nearest_between(
-		const line<Vector>& l, const line<Vector>& m) {
-
-	typedef typename vector_traits<Vector>::value_type length;
-	typedef direction<vector_traits<Vector>::Dimension> direction;
-
-	const direction u = l.direction();
-	const direction v = m.direction();
-
-	const gkfloat alpha = dot<direction, direction, gkfloat>(u, v);
-	const gkfloat beta = GK_FLOAT_ONE - alpha * alpha;
-
-	const Vector r = l.reference() - m.reference();
-
-	if (beta == GK_FLOAT_ZERO) {
-		/* parallel */
-		return std::make_pair(length(GK_FLOAT_ZERO), dot(r, v));
-
-	} else {
-		/* no parallel */
-		const dot<Vector, direction, length> dot;
-		const length s = (alpha * dot(r, v) - dot(r, u)) / beta;
-		const length t = dot(r, v) + alpha * s;
-
-		return std::make_pair(s, t);
-	}
-}
+//template<typename Vector>
+//std::pair<typename vector_traits<Vector>::value_type,
+//		typename vector_traits<Vector>::value_type> nearest_between(
+//		const line<Vector>& l, const line<Vector>& m) {
+//
+//	typedef typename vector_traits<Vector>::value_type length;
+//	typedef direction<vector_traits<Vector>::Dimension> direction;
+//
+//	const direction u = l.direction();
+//	const direction v = m.direction();
+//
+//	const gkfloat alpha = dot<direction, direction, gkfloat>(u, v);
+//	const gkfloat beta = GK_FLOAT_ONE - alpha * alpha;
+//
+//	const Vector r = l.reference() - m.reference();
+//
+//	if (beta == GK_FLOAT_ZERO) {
+//		/* parallel */
+//		return std::make_pair(length(GK_FLOAT_ZERO), dot(r, v));
+//
+//	} else {
+//		/* no parallel */
+//		const dot<Vector, direction, length> dot;
+//		const length s = (alpha * dot(r, v) - dot(r, u)) / beta;
+//		const length t = dot(r, v) + alpha * s;
+//
+//		return std::make_pair(s, t);
+//	}
+//}
 
 template<typename Vector>
 std::pair<typename vector_traits<Vector>::value_type,
@@ -222,20 +220,20 @@ struct intersect_result<plane<Vector>, line<Vector> > {
 	typedef Vector value_type;
 };
 
-template<typename Vector, typename Tolerance, typename OutputIterator>
-OutputIterator intersect(const line<Vector>& a, const line<Vector>& b,
-		const Tolerance& epsilon, OutputIterator result) {
-	typedef typename vector_traits<Vector>::value_type value_type;
-
-	const std::pair<value_type, value_type> T = nearest_between(a, b);
-
-	if (norm(a(T.first) - b(T.second)) < epsilon) {
-		*result = 0.5 * (a(T.first) + b(T.second));
-		++result;
-	}
-
-	return result;
-}
+//template<typename Vector, typename Tolerance, typename OutputIterator>
+//OutputIterator intersect(const line<Vector>& a, const line<Vector>& b,
+//		const Tolerance& epsilon, OutputIterator result) {
+//	typedef typename vector_traits<Vector>::value_type value_type;
+//
+//	const std::pair<value_type, value_type> T = nearest_between(a, b);
+//
+//	if (norm(a(T.first) - b(T.second)) < epsilon) {
+//		*result = 0.5 * (a(T.first) + b(T.second));
+//		++result;
+//	}
+//
+//	return result;
+//}
 
 template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator intersect(const segment<Vector>& a, const segment<Vector>& b,

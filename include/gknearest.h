@@ -8,7 +8,8 @@
 #ifndef GKNEAREST_H_
 #define GKNEAREST_H_
 
-#include "gkdirection.h"
+#include "gkvector.h"
+#include "algorithm/directionof.h"
 
 namespace gk {
 
@@ -16,15 +17,6 @@ namespace inner {
 
 template<typename Geometry, typename Vector, typename GeometryCategory>
 Vector nearest(const Geometry& g, const Vector& v, GeometryCategory);
-
-template<typename Vector>
-Vector nearest_to_line(const Vector& reference,
-		const direction<vector_traits<Vector>::Dimension>& u, const Vector& v) {
-	const Vector r = v - reference;
-	const dot<Vector, direction<vector_traits<Vector>::Dimension>,
-			typename vector_traits<Vector>::value_type> dot;
-	return dot(r, u) * u - r;
-}
 
 template<typename Line, typename Vector>
 Vector nearest(const Line& line, const Vector& v, line_tag) {
@@ -36,12 +28,11 @@ Vector nearest(const Line& line, const Vector& v, line_tag) {
 template<typename Segment, typename Vector>
 Vector nearest(const Segment& segment, const Vector& v, segment_tag) {
 	typedef typename vector_traits<Vector>::value_type value_type;
-	typedef typename direction<vector_traits<Vector>::Dimension> direction;
+	typedef direction<vector_traits<Vector>::Dimension> direction_type;
 
-	const direction u = direction_of(segment);
+	const direction_type u = direction_of(segment);
 	const Vector r = nearest_to_line(segment[GK::StartEdge], u, v);
 
-	const dot<Vector, direction, value_type> dot;
 	const value_type t = dot(r, u);
 	if (std::signbit(t)) {
 		return segment[GK::StartEdge] - v;
@@ -59,14 +50,13 @@ Vector nearest(const Plane& plane, const Vector& v, plane_tag) {
 	const Vector r = plane(value_type(GK_FLOAT_ZERO), value_type(GK_FLOAT_ZERO))
 			- v;
 
-	const dot<Vector, direction, value_type> dot;
-	return dot(r, n) * n;
+	return v + dot(r, n) * n;
 }
 
 }  // namespace inner
 
 /**
- * @brief Compute a vector being from a position vector @a v to a nearest position
+ * @brief Computes a vector being from a position vector @a v to a nearest position
  * on a geometry @a g.
  * @param g
  * @param v
@@ -74,59 +64,25 @@ Vector nearest(const Plane& plane, const Vector& v, plane_tag) {
  */
 template<typename Geometry, typename Vector>
 Vector nearest(const Geometry& g, const Vector& v) {
-	return inner::nearest(g, v, geometry_traits<Geometry>::geometry_category());
+	return inner::nearest(g, v,
+			typename geometry_traits<Geometry>::geometry_category());
 }
 
 namespace inner {
 
 template<typename Geometry1, typename Geometry2, typename Geometry1Category,
 		typename Geometry2Category>
-std::pair<
-		typename vector_traits<typename geometry_traits<Geometry1>::vector_type>::value_type,
-		typename vector_traits<typename geometry_traits<Geometry2>::vector_type>::value_type> nearest_between(
+std::pair<typename geometry_traits<Geometry1>::vector_type,
+		typename geometry_traits<Geometry2>::vector_type> nearest_between(
 		const Geometry1& a, const Geometry2& b, Geometry1Category,
 		Geometry2Category);
 
-template<typename Vector>
-std::pair<typename vector_traits<Vector>::value_type,
-		typename vector_traits<Vector>::value_type> nearest_between_lines(
-		const Vector& reference1,
-		const direction<vector_traits<Vector>::Dimension>& direction1,
-		const Vector& reference2,
-		const direction<vector_traits<Vector>::Dimension>& direction2) {
-
-	typedef typename vector_traits<Vector>::value_type length;
-	typedef direction<vector_traits<Vector>::Dimension> direction;
-
-	const gkfloat alpha = dot<direction, direction, gkfloat>(direction1,
-			direction2);
-	const gkfloat beta = GK_FLOAT_ONE - alpha * alpha;
-
-	const Vector r = reference1 - reference2;
-
-	if (beta == GK_FLOAT_ZERO) {
-		/* parallel */
-		return std::make_pair(length(GK_FLOAT_ZERO), dot(r, direction2));
-
-	} else {
-		/* no parallel */
-		const dot<Vector, direction, length> dot;
-		const length s = (alpha * dot(r, direction2) - dot(r, direction1))
-				/ beta;
-		const length t = dot(r, direction2) + alpha * s;
-
-		return std::make_pair(s, t);
-	}
-}
-
 template<typename Line>
-std::pair<
-		typename vector_traits<typename geometry_traits<Line>::vector_type>::value_type,
-		typename vector_traits<typename geometry_traits<Line>::vector_type>::value_type> nearest_between(
+std::pair<typename geometry_traits<Line>::vector_type,
+		typename geometry_traits<Line>::vector_type> nearest_between(
 		const Line& l, const Line& m, line_tag, line_tag) {
 	typedef typename geometry_traits<Line>::vector_type vector_type;
 	typedef typename vector_traits<vector_type>::value_type length;
-	typedef direction<vector_traits<vector_type>::Dimension> direction;
 
 	return nearest_between_lines(l(length(GK_FLOAT_ZERO)), direction_of(l),
 			m(length(GK_FLOAT_ZERO)), direction_of(m));
@@ -149,24 +105,24 @@ std::pair<typename geometry_traits<Segment>::vector_type,
 	const length t = (std::signbit(r.second)) ? length(GK_FLOAT_ZERO) :
 						(r.second >= length(m)) ? length(m) : r.second;
 
-	return std::make_pair(s, t);
+	return std::make_pair(l(s), m(t));
 }
 
 }  // namespace inner
 
 /**
- * @brief Compute
+ * @brief Computes nearest positions of each geometry.
  * @param a
  * @param b
  * @return
  */
 template<typename Geometry1, typename Geometry2>
 std::pair<typename geometry_traits<Geometry1>::vector_type,
-		typename geometry_traits<Geometry2>::vector_type> nearest_betweeen(
+		typename geometry_traits<Geometry2>::vector_type> nearest_between(
 		const Geometry1& a, const Geometry2& b) {
 	return inner::nearest_between(a, b,
-			geometry_traits<Geometry1>::geometry_category(),
-			geometry_traits<Geometry2>::geometry_category());
+			typename geometry_traits<Geometry1>::geometry_category(),
+			typename geometry_traits<Geometry2>::geometry_category());
 }
 
 }  // namespace gk
