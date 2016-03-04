@@ -1,0 +1,45 @@
+/**
+ @page VectorConceptPage 
+ @section IntroductionSection Introduction
+ This library uses a template programming. 
+
+ @subsection MemberMethodsSection Member methods
+
+ Methods | Descriptions | Examples 
+ ---------|---------------- | ---------
+ @code{.cpp} Vector() @endcode | Zero position vector. | @code{.cpp} Vector v; @endcode
+ @code{.cpp} Vector(const Vector&) @endcode | Copy constructor. | @code{.cpp} Vector other = v; @endcode
+ @code{.cpp} operator=(const Vector&) @endcode | Copy operator. | @code{.cpp} u = v; @endcode
+ @code{.cpp} operator+=(const Vector&) @endcode | | @code{.cpp} u += v; @endcode
+ @code{.cpp} operator-=(const Vector&) @endcode | | @code{.cpp} u -= v; @endcode
+ @code{.cpp} operator*=(const value_type&) @endcode | | @code{.cpp} v *= alpha; @endcode
+ @code{.cpp} operator/=(const value_type&) @endcode | | @code{.cpp} v /= alpha; @endcode
+
+ @subsection GeneralFunctionsSection General functions
+
+ Functions | Descriptions | Examples
+ ------------|----------------|----------
+ @code{.cpp} operator+(const Vector&, const Vector&) @endcode | Computes a addition. | @code{.cpp} w = u + v; @endcode
+ @code{.cpp} operator-(const Vector&, const Vector&) @endcode | Computes a subtraction. | @code{.cpp} w = u - v; @endcode
+ @code{.cpp} operator*(const value_type&, const Vector&) @endcode |  | @code{.cpp} w = alpha * v; @endcode
+ @code{.cpp} operator*(const Vector&, const value_type&) @endcode |  | @code{.cpp} w = v * alpha; @endcode
+ @code{.cpp} operator/(const Vector&, const value_type&) @endcode |  | @code{.cpp} w = v / alpha; @endcode
+
+ @section TraitsClassSection Traits Class
+ gk::vector_traits 
+
+
+ @code{.cpp}
+ namespace gk {
+ template<typename Vector>
+ struct vector_traits{
+ static const size_t Dimension=2;
+ typedef double value_type;
+ };
+ } // namespace gk
+ @endcode
+
+ @section ConstructorSection Constructor
+
+ @section AlgebraCalculationSection Algebra calculation
+ */
