@@ -131,8 +131,8 @@ public:
 	typedef const value_type* const_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	static const size_t Dimension = DimensionSize;/*vector_traits<Vector>::Dimension;*/
-	static const size_t ElementSize = DimensionSize;/*vector_traits<Vector>::Dimension; //dimension_category::Size;*/
+	static const size_t Dimension = DimensionSize;
+	static const size_t ElementSize = DimensionSize;
 
 private:
 
@@ -202,21 +202,21 @@ public:
 	~direction() {
 	}
 
-	const_iterator begin() const {
-		return this->x_;
-	}
-
-	const_iterator end() const {
-		return this->x_ + Dimension;
-	}
-
-	const_reverse_iterator rbegin() const {
-		return std::reverse_iterator<const_iterator>(this->end());
-	}
-
-	const_reverse_iterator rend() const {
-		return std::reverse_iterator<const_iterator>(this->begin());
-	}
+//	const_iterator begin() const {
+//		return this->x_;
+//	}
+//
+//	const_iterator end() const {
+//		return this->x_ + Dimension;
+//	}
+//
+//	const_reverse_iterator rbegin() const {
+//		return std::reverse_iterator<const_iterator>(this->end());
+//	}
+//
+//	const_reverse_iterator rend() const {
+//		return std::reverse_iterator<const_iterator>(this->begin());
+//	}
 
 	const value_type* data() const {
 		return this->x_;
@@ -239,14 +239,15 @@ private:
 	value_type x_[ElementSize];
 };
 
+/**
+ * @brief
+ *
+ * @author Takuya Makimoto
+ * @date 2016/03/07
+ */
 template<size_t DimensionSize>
 struct vector_traits<direction<DimensionSize> > {
 	typedef typename direction<DimensionSize>::value_type value_type; ///< Type of elements in a vector.
-
-//	typedef value_type* iterator;
-//	typedef const value_type* const_iterator;
-//	typedef std::reverse_iterator<iterator> reverse_iterator;
-//	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
 	static const bool IsHomogeneous = false;
@@ -278,6 +279,11 @@ std::basic_ostream<CharT, Traits>& operator<<(
 template<typename T>
 direction<geometry_traits<T>::Dimension> direction_of(const T& a);
 
+/**
+ * @brief Computes a direction of a vector.
+ * @param v The vector to be computed.
+ * @return
+ */
 template<typename Vector>
 direction<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
 	return direction<vector_traits<Vector>::Dimension>(v);
@@ -295,6 +301,29 @@ typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
 	return typename direction<Dimension>::value_type(GK_FLOAT_ONE);
 }
 
+namespace inner {
+
+template<size_t Dimension, typename Vector>
+direction<Dimension> gk_normal_direction(const Vector&, const Vector&,
+		dimension<Dimension>) {
+	return direction<Dimension>();
+}
+
+template<typename Vector>
+direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
+		dimension<GK::GK_3D>) {
+	const typename vector_traits<Vector>::value_type Unit(GK_FLOAT_ONE);
+
+	Vector r;
+	r[GK::X] = (u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y]) / Unit;
+	r[GK::Y] = (u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z]) / Unit;
+	r[GK::Z] = (u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X]) / Unit;
+
+	return direction<GK::GK_3D>(r);
+}
+
+} // namespace inner
+
 /**
  * @brief Computes a normal vector made by 2 vectors @a u and @a v
  * in a 3D space.
@@ -305,14 +334,8 @@ typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
 template<typename Vector>
 direction<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
 		const Vector& v) {
-	const typename vector_traits<Vector>::value_type unit(GK_FLOAT_ONE);
-
-	Vector r;
-	r[GK::X] = (u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y]) / unit;
-	r[GK::Y] = (u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z]) / unit;
-	r[GK::Z] = (u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X]) / unit;
-
-	return direction<vector_traits<Vector>::Dimension>(r);
+	return inner::gk_normal_direction(u, v,
+			dimension<vector_traits<Vector>::Dimension>());
 }
 
 /**
@@ -320,11 +343,11 @@ direction<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
  * @author Takuya Makimoto
  * @date 2015/12/09
  */
-template<typename Vector>
+template<size_t DimensionSize>
 class basis {
 public:
-	static const size_t Dimension = vector_traits<Vector>::Dimension;
-	typedef direction<vector_traits<Vector>::Dimension> direction_type;
+	static const size_t Dimension = DimensionSize;
+	typedef direction<DimensionSize> direction_type;
 
 private:
 	static direction_type value_(size_t n) {

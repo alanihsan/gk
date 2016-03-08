@@ -31,7 +31,7 @@ class vector_base;
  * @f]
  *
  * @author Takuya Makimoto
- * @date 2015
+ * @date 2016/03/08
  */
 template<size_t DimensionSize, typename T,
 		template<size_t, typename > class Derived>

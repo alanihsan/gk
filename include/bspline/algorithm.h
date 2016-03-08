@@ -46,7 +46,7 @@ OutputIterator intersect_bspline_segment(const bspline<Vector, KnotVector>& a,
 	}
 
 	typename curve_traits<bspline<Vector> >::distance_type max_distance;
-	const std::pair<Vector, Vector> X = linear(a, max_distance);
+	const std::pair<Vector, Vector> X = linearize(a, max_distance);
 	if (max_distance < epsilon) {
 		*result = alg::intersect_2segments(X.first, X.second, box_pt1, box_pt2,
 				epsilon, result);
@@ -163,7 +163,7 @@ template<typename Vector, typename Other, typename Tolerance,
 OutputIterator intersect(const bspline<Vector>& a, const Other& b,
 		const Tolerance& epsilon, OutputIterator result) {
 	return inner::intersect_kernel(a, b, epsilon, result,
-			geometry_traits<Other>::geometry_category());
+			typename geometry_traits<Other>::geometry_category());
 }
 
 template<typename Vector, typename Other, typename Tolerance,

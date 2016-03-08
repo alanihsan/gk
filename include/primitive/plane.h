@@ -50,10 +50,6 @@ public:
 			ref_(other.ref_), normal_(other.normal_) {
 	}
 
-//	plane(const gkinvalid& invalid) :
-//			ref_(invalid), normal_(invalid) {
-//	}
-
 	/**
 	 *
 	 * @param reference

@@ -387,8 +387,8 @@ OutputIterator subdivide(const bspline<Vector, KnotVector>& x,
 	return result;
 }
 
-template<typename Vector, typename KnotVector, typename Segment>
-std::pair<Vector, Vector> linear(const bspline<Vector, KnotVector>& x,
+template<typename Vector, typename KnotVector>
+std::pair<Vector, Vector> linearize(const bspline<Vector, KnotVector>& x,
 		typename vector_traits<Vector>::value_type& max_distance) {
 
 	max_distance = typename vector_traits<Vector>::value_type(
@@ -404,8 +404,8 @@ std::pair<Vector, Vector> linear(const bspline<Vector, KnotVector>& x,
 	typedef typename bspline<Vector>::control_points controls;
 	for (typename controls::iterator p = y.controls().begin();
 			p != y.controls().end(); ++p) {
-		const typename geometry_traits<Segment>::vector_type v = nearest(result,
-				*p);
+		const Vector v = alg::nearest_to_line(result.first,
+				normalize(result.second - result.first), *p);
 
 		const typename vector_traits<Vector>::value_type d = norm(v - *p);
 		max_distance = std::max(max_distance, d);
