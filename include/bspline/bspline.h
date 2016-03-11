@@ -74,11 +74,11 @@ typename knotvector_traits<KnotVector>::const_iterator erase_elements(
  * @author Takuya Makimoto
  * @date 2015
  */
-template<typename Vector, typename KnotVector = knotvector<gkfloat> >
+template<typename Vector, typename Parameter>
 class bspline: public curve<free_curve_tag, Vector> {
 public:
 	typedef Vector vector_type;
-	typedef KnotVector knotvector_type;
+	typedef std::vector<Parameter> knotvector_type;
 	typedef std::vector<Vector> control_points;
 
 private:
@@ -272,8 +272,7 @@ public:
 //		this->T_.erase(this->T_.begin());
 //	}
 
-	template<typename Parameter>
-	vector_type operator()(const Parameter& t) const {
+	Vector operator()(const Parameter& t) const {
 		std::vector<Parameter> N(this->Q_.size());
 		basis_function(compute_degree_(this->T_.size(), this->Q_.size()),
 				this->T_.begin(), this->T_.end(), t, N.begin());
@@ -284,7 +283,7 @@ public:
 //		}
 
 		return std::inner_product(this->Q_.begin(), this->Q_.end(), N.begin(),
-				vector_type());
+				Vector());
 //		return r;
 	}
 
