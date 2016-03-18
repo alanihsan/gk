@@ -5,8 +5,8 @@
  *      Author: Takuya Makimoto
  */
 
-#ifndef GKQUATERNION_H_TMPL_
-#define GKQUATERNION_H_TMPL_
+#ifndef GKQUATERNION_H_
+#define GKQUATERNION_H_
 
 #include "gkdef.h"
 
@@ -272,4 +272,4 @@ quaternion operator/(const quaternion& lhs, gkfloat rhs) {
 
 } // namespace gk
 
-#endif /* GKQUATERNION_H_TMPL_ */
+#endif /* GKQUATERNION_H_ */
