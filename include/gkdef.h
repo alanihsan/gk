@@ -19,36 +19,36 @@
 
 #include "config/gkconfig.h"
 
-/*
- * Integer Value Type．
- */
-#ifdef GK_SIZEOF_INT
-#	if GK_SIZEOF_INT == __SIZEOF_INT__
-#		define GK_INT_TYPE  int32_t
-#		define GK_UINT_TYPE uint32_t
-#		define GK_INT_MAX   __INT32_MAX__
-#		define GK_UINT_MAX  __UINT32_MAX__
-# 	elif GK_SIZEOF_INT == __SIZEOF_LONG_LONG__
-#		define GK_INT_TYPE  int64_t
-#		define GK_UINT_TYPE uint64_t
-#		define GK_INT_MAX   __INT64_MAX__
-#		define GK_UINT_MAX  __UINT64_MAX__
-#	else
-#		error "GK_INT_BYTE" must set 4 or 8.
-#	endif
-#else
-#	define GK_SIZEOF_INT 4
-#	define GK_INT_TYPE int32_t
-#	define GK_UINT_TYPE uint32_t
-#	define GK_INT_MAX   __INT32_MAX__
-#	define GK_UINT_MAX  __UINT32_MAX__
-#endif
-typedef GK_INT_TYPE gkint; ///< Signed integer.
-typedef GK_UINT_TYPE gkuint; ///< Unsigned integer.
-#undef GK_INT_TYPE
-#undef GK_UINT_TYPE
-
-typedef gkuint gksize;
+///*
+// * Integer Value Type．
+// */
+//#ifdef GK_SIZEOF_INT
+//#	if GK_SIZEOF_INT == __SIZEOF_INT__
+//#		define GK_INT_TYPE  int32_t
+//#		define GK_UINT_TYPE uint32_t
+//#		define GK_INT_MAX   __INT32_MAX__
+//#		define GK_UINT_MAX  __UINT32_MAX__
+//# 	elif GK_SIZEOF_INT == __SIZEOF_LONG_LONG__
+//#		define GK_INT_TYPE  int64_t
+//#		define GK_UINT_TYPE uint64_t
+//#		define GK_INT_MAX   __INT64_MAX__
+//#		define GK_UINT_MAX  __UINT64_MAX__
+//#	else
+//#		error "GK_INT_BYTE" must set 4 or 8.
+//#	endif
+//#else
+//#	define GK_SIZEOF_INT 4
+//#	define GK_INT_TYPE int32_t
+//#	define GK_UINT_TYPE uint32_t
+//#	define GK_INT_MAX   __INT32_MAX__
+//#	define GK_UINT_MAX  __UINT32_MAX__
+//#endif
+//typedef GK_INT_TYPE gkint; ///< Signed integer.
+//typedef GK_UINT_TYPE gkuint; ///< Unsigned integer.
+//#undef GK_INT_TYPE
+//#undef GK_UINT_TYPE
+//
+//typedef gkuint gksize;
 
 /*
  * Floating Value Type．
@@ -86,7 +86,7 @@ struct number_tag {
 };
 
 template<std::size_t Dimension>
-struct dimension: public number_tag<Dimension> {
+struct dimension_tag: public number_tag<Dimension> {
 	static const std::size_t Size = Dimension;
 };
 
@@ -94,14 +94,19 @@ struct dimension: public number_tag<Dimension> {
  * @brief Struct of constant objects.
  */
 struct GK {
-	static const gkint NonDimension = 0;
 
 //#ifdef GK_EIGEN_ENABLED
 //	static const gksize DynamicSize = static_cast<gksize>(Eigen::Dynamic);
 //#endif
 
+	/**
+	 * @brief Enum about space dimensions.
+	 */
 	typedef enum {
-		GK_NonDim = 0, GK_1D = 1, GK_2D = 2, GK_3D = 3
+		GK_NonDim = 0, ///< Non-dimension.
+		GK_1D = 1, ///< 1 dimension.
+		GK_2D = 2, ///< 2 dimension.
+		GK_3D = 3 ///< 3 dimension.
 	} DimensionNumber;
 
 	typedef enum {

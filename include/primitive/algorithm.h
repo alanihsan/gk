@@ -19,7 +19,7 @@ bool orientation(const plane<Vector>& p, const Vector& v) {
 	return !std::signbit(dot(u, p.normal()));
 }
 
-namespace inner {
+namespace impl {
 
 template<typename Plane, typename Vector>
 bool orientation(const Plane& plane, const Vector& v, plane_tag) {
@@ -40,14 +40,14 @@ typename geometry_traits<Line>::parameter nearest(const Line& l,
 
 template<typename Plane, typename Vector>
 bool orientation(const Plane& plane, const Vector& v) {
-	return inner::orientation(plane, v,
+	return impl::orientation(plane, v,
 			geometry_traits<Plane>::geometry_category());
 }
 
 template<typename Geometry, typename Vector>
 typename geometry_traits<Geometry>::parameter nearest(const Geometry& a,
 		const Vector& v) {
-	return inner::nearest(a, v, geometry_traits<Geometry>::geometry_category());
+	return impl::nearest(a, v, geometry_traits<Geometry>::geometry_category());
 }
 
 template<typename Vector>
@@ -350,11 +350,11 @@ OutputIterator intersect(const plane<Vector>& a, const segment<Vector>& b,
 	return intersect(b, a, epsilon, result);
 }
 
-namespace inner {
+namespace impl {
 
 template<typename Vector>
 bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
-		dimension<GK::GK_2D>) {
+		dimension_tag<GK::GK_2D>) {
 
 	std::pair<line<Vector>, line<Vector> > x_lines = std::make_pair(
 			line<Vector>(boundary.min()), basis()[GK::Y]);
@@ -364,7 +364,7 @@ bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
 
 template<typename Vector>
 bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 
 }
 

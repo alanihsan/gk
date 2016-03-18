@@ -211,18 +211,21 @@ template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator intersect_2segments(const Vector& a_start, const Vector& a_end,
 		const Vector& b_start, const Vector& b_end, const Tolerance& epsilon,
 		OutputIterator result) {
-	const OutputIterator result_end = intersect_2lines(a_start,
-			normalize(a_end - a_start), b_start, normalize(b_end - b_start),
-			epsilon, result);
 
-	if (std::distance(result, result_end) == 0) {
+	std::vector<Vector> X;
+	intersect_2lines(a_start, normalize(a_end - a_start), b_start,
+			normalize(b_end - b_start), epsilon, std::inserter(X, X.begin()));
+
+	if (X.empty()) {
 		return result;
 	}
 
 	if (std::signbit(
-			dot(*result - a_start, *result - a_end)
-					* dot(*result - b_start, *result - b_end))) {
-		return result_end;
+			dot(X.front() - a_start, X.front() - a_end)
+					* dot(X.front() - b_start, X.front() - b_end))) {
+		*result = X.front();
+		++result;
+		return result;
 	} else {
 		return result;
 	}
@@ -353,7 +356,8 @@ OutputIterator intersect_line_plane(const Vector& line_reference,
 template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator gk_intersect_line_box(const Vector& reference,
 		const direction<GK::GK_2D>& u, const Vector& box_a, const Vector& box_b,
-		const Tolerance& epsilon, OutputIterator result, dimension<GK::GK_2D>) {
+		const Tolerance& epsilon, OutputIterator result,
+		dimension_tag<GK::GK_2D>) {
 
 	typedef typename vector_traits<Vector>::value_type value_type;
 	const value_type unit = value_type(GK_FLOAT_ONE);
@@ -371,14 +375,14 @@ OutputIterator gk_intersect_line_box(const Vector& reference,
 		std::vector<Vector> X;
 		std::vector<Vector> Y;
 
-		intersect_2lines(reference, u, box.min(), basis<Vector>()[d], epsilon,
-				std::inserter(X, X.begin()));
+		intersect_2lines(reference, u, box.min(), basis<GK::GK_2D>()[d],
+				epsilon, std::inserter(X, X.begin()));
 		if (X.empty()) {
 			continue;
 		}
 
-		intersect_2lines(reference, u, box.max(), basis<Vector>()[d], epsilon,
-				std::inserter(Y, Y.begin()));
+		intersect_2lines(reference, u, box.max(), basis<GK::GK_2D>()[d],
+				epsilon, std::inserter(Y, Y.begin()));
 
 		const std::pair<value_type, Vector> S = std::make_pair(
 				dot(X.front() - reference, u), X.front());
@@ -410,7 +414,8 @@ OutputIterator gk_intersect_line_box(const Vector& reference,
 template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator gk_intersect_line_box(const Vector& reference,
 		const direction<GK::GK_3D>& u, const Vector& box_a, const Vector& box_b,
-		const Tolerance& epsilon, OutputIterator result, dimension<GK::GK_3D>) {
+		const Tolerance& epsilon, OutputIterator result,
+		dimension_tag<GK::GK_3D>) {
 	return result;
 }
 
@@ -433,10 +438,11 @@ OutputIterator gk_intersect_line_box(const Vector& reference,
 template<typename Vector, size_t Dimension, typename Tolerance,
 		typename OutputIterator>
 OutputIterator intersect_line_box(const Vector& reference,
-		const direction<Dimension>& u, const Vector& box_pt1, const Vector& box_pt2,
-		const Tolerance& epsilon, OutputIterator result) {
-	return gk_intersect_line_box(reference, u, box_pt1, box_pt2, epsilon, result,
-			dimension<vector_traits<Vector>::Dimension>());
+		const direction<Dimension>& u, const Vector& box_pt1,
+		const Vector& box_pt2, const Tolerance& epsilon,
+		OutputIterator result) {
+	return gk_intersect_line_box(reference, u, box_pt1, box_pt2, epsilon,
+			result, dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 }  // namespace alg

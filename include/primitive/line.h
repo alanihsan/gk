@@ -31,7 +31,7 @@ namespace gk {
  * @date 2015/12/01
  */
 template<typename Vector>
-class line: public curve<line_tag, Vector> {
+class line: public geometry<line_tag, Vector> {
 public:
 	typedef Vector vector_type;
 
@@ -156,7 +156,7 @@ private:
  * @date 2015/12/01
  */
 template<typename Vector>
-class segment/*: public curve<segment_tag, Vector, Parameter>*/{
+class segment: geometry<segment_tag, Vector> {
 public:
 	typedef Vector vector_type;
 	typedef typename vector_traits<Vector>::value_type value_type;
@@ -261,8 +261,7 @@ direction<vector_traits<Vector>::Dimension> direction_of(
 }
 
 template<typename Vector>
-typename curve_traits<segment<Vector> >::distance_type length(
-		const segment<Vector>& x) {
+typename vector_traits<Vector>::value_type length(const segment<Vector>& x) {
 	return norm(x.start() - x.end());
 }
 

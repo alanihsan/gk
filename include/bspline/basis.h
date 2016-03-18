@@ -69,7 +69,7 @@ public:
 			X_(other.X_) {
 	}
 
-	knotvector(gksize size) :
+	knotvector(std::size_t size) :
 			X_(size) {
 	}
 
@@ -86,7 +86,7 @@ public:
 		return this->X_.empty();
 	}
 
-	gksize size() const {
+	std::size_t size() const {
 		return this->X_.size();
 	}
 
@@ -120,7 +120,7 @@ public:
 		return this->X_.insert(p, t);
 	}
 
-	void insert(const T& t, gksize multiplicity) {
+	void insert(const T& t, std::size_t multiplicity) {
 		typename container_type::iterator p = std::upper_bound(this->X_.begin(),
 				this->X_.end(), t);
 		this->X_.insert(p, multiplicity, t);
@@ -153,7 +153,7 @@ public:
 				this->X_.begin() + (last - this->X_.begin()));
 	}
 
-	value_type operator[](gksize n) const {
+	value_type operator[](std::size_t n) const {
 		return this->X_[n];
 	}
 
@@ -171,6 +171,12 @@ private:
 };
 
 template<typename Parameter>
+std::pair<Parameter, Parameter> domain(std::size_t degree,
+		const knotvector<Parameter>& T) {
+	return std::make_pair(T[degree], T[T.size() - degree - 1]);
+}
+
+template<typename Parameter>
 size_t knot_segment(const knotvector<Parameter>& T, std::size_t degree,
 		const Parameter& t) {
 	const std::size_t order = degree + 1;
@@ -181,7 +187,7 @@ size_t knot_segment(const knotvector<Parameter>& T, std::size_t degree,
 }
 
 template<typename RandomAccessIterator, typename Parameter>
-RandomAccessIterator segment(size_t degree, RandomAccessIterator first,
+RandomAccessIterator segment_of(size_t degree, RandomAccessIterator first,
 		RandomAccessIterator last, const Parameter& t) {
 	const size_t order = degree + 1;
 	const size_t n = std::distance(first, last) - order;
@@ -264,7 +270,7 @@ OutputRandomAccessIterator basis_function(size_t degree,
 
 			N[segment - k + 1] = -p * beta[segment - k + 2]
 					* N[segment - k + 2];
-			for (gksize j = segment - k + 2; j < segment; ++j) {
+			for (std::size_t j = segment - k + 2; j < segment; ++j) {
 				N[j] = p * (beta[j] * N[j] - beta[j + 1] * N[j + 1]);
 			}
 			N[segment] = p * beta[segment] * N[segment];

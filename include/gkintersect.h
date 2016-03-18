@@ -9,7 +9,6 @@
 #define GKINTERSECT_H_
 
 #include "gkgeometry.h"
-#include "gknearest.h"
 #include "algorithm/kernel.h"
 
 namespace gk {
@@ -25,7 +24,7 @@ struct intersect_result {
 	typedef void value_type;
 };
 
-namespace inner {
+namespace impl {
 
 /**
  * @brief This declaration is a kernel function to compute intersections
@@ -124,7 +123,7 @@ template<typename Geometry1, typename Geometry2, typename Tolerance,
 		typename OutputIterator>
 OutputIterator intersect(const Geometry1& a, const Geometry2& b,
 		const Tolerance& epsilon, OutputIterator result) {
-	return inner::intersect_kernel(a, b, epsilon, result,
+	return impl::intersect_kernel(a, b, epsilon, result,
 			typename geometry_traits<Geometry1>::geometry_category(),
 			typename geometry_traits<Geometry2>::geometry_category());
 }

@@ -17,39 +17,49 @@
 
 namespace gk {
 
-///*
-// * Classification of geometries.
-// */
-//struct curve_type {
-//};
-//
-//struct surface_type {
-//};
-
 /*
  * Classification of traits of a curve.
+ */
+
+/**
+ * @brief Direction category.
  */
 struct direction_tag {
 };
 
-struct vector_tag: public direction_tag {
-};
-
+/**
+ * @brief Curve category.
+ */
 struct curve_tag {
 };
 
+/**
+ * @brief Line category.
+ */
 struct line_tag: public curve_tag, public direction_tag {
 };
 
+/**
+ * @brief Ray category.
+ */
 struct ray_tag: public line_tag {
 };
 
+/**
+ * @brief Segment category.
+ */
 struct segment_tag: public ray_tag {
 };
 
+/**
+ * @brief Circle category.
+ */
 struct circle_tag: public curve_tag, public direction_tag {
 };
 
+/**
+ * @brief Free curve category.
+ */
 struct free_curve_tag: public curve_tag {
 };
 
@@ -57,25 +67,31 @@ struct free_curve_tag: public curve_tag {
  * Classification of traits of a surface.
  */
 
+/**
+ * @brief Surface category.
+ */
 struct surface_tag {
 };
 
+/**
+ * @brief Plane category.
+ */
 struct plane_tag: public surface_tag, public direction_tag {
 };
 
+/**
+ * @brief Sphere category.
+ */
 struct sphere_tag: public surface_tag {
-};
-
-struct free_surface_tag: public surface_tag {
 };
 
 template<typename Category, typename Vector>
 struct geometry;
 
-#define GK_GEOMETRY_BASE_TEMPLATE_CLASS(category) \
+#define GK_GEOMETRY_BASE_TEMPLATE_CLASS(Category) \
 	template<typename Vector> \
-	struct geometry<category, Vector> { \
-		typedef category geometry_category; \
+	struct geometry<Category, Vector> { \
+		typedef Category category; \
 		typedef Vector vector_type; \
 	};
 
@@ -87,7 +103,7 @@ GK_GEOMETRY_BASE_TEMPLATE_CLASS(circle_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(free_curve_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(plane_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(sphere_tag)
-GK_GEOMETRY_BASE_TEMPLATE_CLASS(free_surface_tag)
+
 #undef GK_GEOMETRY_BASE_TEMPLATE_CLASS
 
 /**
@@ -97,7 +113,7 @@ GK_GEOMETRY_BASE_TEMPLATE_CLASS(free_surface_tag)
  */
 template<typename Geometry>
 struct geometry_traits {
-	typedef typename Geometry::geometry_category geometry_category;
+	typedef typename Geometry::category category;
 	typedef typename Geometry::vector_type vector_type;
 	static const size_t Dimension = Geometry::Dimension;
 };

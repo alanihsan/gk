@@ -83,11 +83,11 @@ typename vector_traits<Vector>::value_type norm(const Vector& v) {
 	return std::sqrt(dot(v, v));
 }
 
-namespace inner {
+namespace impl {
 
 template<typename Vector1, typename Vector2, typename Result>
 void cross_kernel(const Vector1&, const Vector2&, Result& r,
-		dimension<GK::GK_2D>) {
+		dimension_tag<GK::GK_2D>) {
 	typedef typename vector_traits<Result>::value_type value_type;
 	r[GK::X] = value_type(GK_FLOAT_ZERO);
 	r[GK::Y] = value_type(GK_FLOAT_ZERO);
@@ -95,7 +95,7 @@ void cross_kernel(const Vector1&, const Vector2&, Result& r,
 
 template<typename Vector1, typename Vector2, typename Result>
 void cross_kernel(const Vector1& u, const Vector2& v, Result& r,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 	r[GK::X] = u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y];
 	r[GK::Y] = u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z];
 	r[GK::Z] = u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X];
@@ -124,53 +124,85 @@ struct cross {
  * @author Takuya Makimoto
  * @date 2016/01/25
  */
-template<size_t DimensionSize>
+template<std::size_t DimensionSize>
 class direction {
 public:
 	typedef gkfloat value_type;
 	typedef const value_type* const_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	static const size_t Dimension = DimensionSize;
-	static const size_t ElementSize = DimensionSize;
+	static const std::size_t Dimension = DimensionSize;
+	static const std::size_t ElementSize = DimensionSize;
 
 private:
 
-	/**
-	 * @brief Normalize a vector.
-	 * @param v
-	 * @param d
-	 */
-	template<typename Vector, size_t Dimension>
-	void Normalize_(const Vector& v, direction& d, dimension<Dimension>) {
-		const typename divides_result<gkfloat,
-				typename vector_traits<Vector>::value_type>::value_type F =
-				gkfloat(
-				GK_FLOAT_ONE) / norm(v);
-		for (size_t i = 0; i < DimensionSize; ++i) {
-			d.x_[i] = F * v[i];
-		}
+//	/**
+//	 * @brief Normalize a vector.
+//	 * @param v
+//	 * @param d
+//	 */
+//	template<typename Vector, size_t Dimension>
+//	void Normalize_(const Vector& v, direction& d, dimension_tag<Dimension>) {
+//		const typename divides_result<gkfloat,
+//				typename vector_traits<Vector>::value_type>::value_type F =
+//				gkfloat(
+//				GK_FLOAT_ONE) / norm(v);
+//		for (size_t i = 0; i < DimensionSize; ++i) {
+//			d.x_[i] = F * v[i];
+//		}
+//	}
+//
+//	template<typename Vector>
+//	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_2D>) {
+//		const typename divides_result<gkfloat,
+//				typename vector_traits<Vector>::value_type>::value_type F =
+//				gkfloat(
+//				GK_FLOAT_ONE) / norm(v);
+//		d.x_[GK::X] = F * v[GK::X];
+//		d.x_[GK::Y] = F * v[GK::Y];
+//	}
+//
+//	template<typename Vector>
+//	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_3D>) {
+//		const typename divides_result<gkfloat,
+//				typename vector_traits<Vector>::value_type>::value_type F =
+//				gkfloat(
+//				GK_FLOAT_ONE) / norm(v);
+//		d.x_[GK::X] = F * v[GK::X];
+//		d.x_[GK::Y] = F * v[GK::Y];
+//		d.x_[GK::Z] = F * v[GK::Z];
+//	}
+
+	template<typename InputIterator, typename OutputIterator>
+	void copy_(InputIterator first, OutputIterator result,
+			std::input_iterator_tag) {
+		InputIterator last = first;
+		std::advance(last, DimensionSize);
+		std::copy(first, last, result);
 	}
 
-	template<typename Vector>
-	void Normalize_(const Vector& v, direction& d, dimension<GK::GK_2D>) {
-		const typename divides_result<gkfloat,
-				typename vector_traits<Vector>::value_type>::value_type F =
-				gkfloat(
-				GK_FLOAT_ONE) / norm(v);
-		d.x_[GK::X] = F * v[GK::X];
-		d.x_[GK::Y] = F * v[GK::Y];
+	template<typename InputIterator, typename OutputIterator>
+	void copy_(InputIterator first, OutputIterator result,
+			std::random_access_iterator_tag) {
+		std::copy(first, first + DimensionSize, result);
 	}
 
-	template<typename Vector>
-	void Normalize_(const Vector& v, direction& d, dimension<GK::GK_3D>) {
+	template<typename InputIterator, typename OutputIterator>
+	void normalize_(InputIterator first, OutputIterator result) {
+		typedef typename multiplies_result<
+				typename std::iterator_traits<InputIterator>::value_type,
+				typename std::iterator_traits<InputIterator>::value_type>::value_type T;
+
+		InputIterator last = first;
+		std::advance(last, DimensionSize);
 		const typename divides_result<gkfloat,
-				typename vector_traits<Vector>::value_type>::value_type F =
-				gkfloat(
-				GK_FLOAT_ONE) / norm(v);
-		d.x_[GK::X] = F * v[GK::X];
-		d.x_[GK::Y] = F * v[GK::Y];
-		d.x_[GK::Z] = F * v[GK::Z];
+				typename std::iterator_traits<InputIterator>::value_type>::value_type F =
+				gkfloat(GK_FLOAT_ONE)
+						/ std::sqrt(
+								std::inner_product(first, last, first,
+										T(GK_FLOAT_ZERO)));
+
+//		std::transform(first,last,result,std::bind2nd(std::multiplies<gkfloat>))
 	}
 
 public:
@@ -193,11 +225,17 @@ public:
 		std::copy(other.x_, other.x_ + ElementSize, this->x_);
 	}
 
-	template<typename Vector>
-	explicit direction(const Vector& v) :
+	template<typename InputIterator>
+	explicit direction(InputIterator x) :
 			x_() {
-		Normalize_(v, *this, dimension<DimensionSize>());
+		std::copy_
 	}
+
+//	template<typename Vector>
+//	explicit direction(const Vector& v) :
+//			x_() {
+//		Normalize_(v, *this, dimension_tag<DimensionSize>());
+//	}
 
 	~direction() {
 	}
@@ -276,6 +314,13 @@ std::basic_ostream<CharT, Traits>& operator<<(
 	return os;
 }
 
+/**
+ * @brief Outputs a direction of a geometry, @a a.
+ *
+ * @tparam T The type of the geometry.
+ * @param a
+ * @return
+ */
 template<typename T>
 direction<geometry_traits<T>::Dimension> direction_of(const T& a);
 
@@ -301,17 +346,17 @@ typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
 	return typename direction<Dimension>::value_type(GK_FLOAT_ONE);
 }
 
-namespace inner {
+namespace impl {
 
 template<size_t Dimension, typename Vector>
 direction<Dimension> gk_normal_direction(const Vector&, const Vector&,
-		dimension<Dimension>) {
+		dimension_tag<Dimension>) {
 	return direction<Dimension>();
 }
 
 template<typename Vector>
 direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 	const typename vector_traits<Vector>::value_type Unit(GK_FLOAT_ONE);
 
 	Vector r;
@@ -334,8 +379,8 @@ direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
 template<typename Vector>
 direction<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
 		const Vector& v) {
-	return inner::gk_normal_direction(u, v,
-			dimension<vector_traits<Vector>::Dimension>());
+	return impl::gk_normal_direction(u, v,
+			dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 /**
@@ -350,38 +395,24 @@ public:
 	typedef direction<DimensionSize> direction_type;
 
 private:
-	static direction_type value_(size_t n) {
-		Vector x;
+	static direction_type Value_(size_t n) {
+		gkfloat x[DimensionSize] = { gkfloat(GK_FLOAT_ZERO) };
 		x[n] = GK_FLOAT_ONE;
 		return direction_type(x);
 	}
 
 public:
 	basis() {
-//		this->initialize_();
 	}
-
-//	basis(const basis& other) {
-//	}
 
 	~basis() {
 	}
 
 	direction_type operator[](size_t n) const {
-//		return this->X_[n];
-		return value_(n);
+		return Value_(n);
 	}
 
 private:
-	direction_type normal_;
-
-private:
-//	void initialize_() {
-//		for (size_t i = 0; i < Dimension; ++i) {
-//			this->X_[i][i] = GK_FLOAT_ONE;
-//		}
-//	}
-
 	basis(const basis&);
 	basis& operator=(const basis&);
 };
@@ -410,11 +441,11 @@ struct rotate {
 	}
 
 	Vector operator()(const Vector& v) const {
-		return rotate_(v, dimension<vector_traits<Vector>::Dimension>());
+		return rotate_(v, dimension_tag<vector_traits<Vector>::Dimension>());
 	}
 
 private:
-	Vector rotate_(const Vector& v, dimension<GK::GK_2D>) const {
+	Vector rotate_(const Vector& v, dimension_tag<GK::GK_2D>) const {
 		const gkfloat sin = std::sin(this->angle);
 		const gkfloat cos = std::cos(this->angle);
 
@@ -424,7 +455,7 @@ private:
 		return r;
 	}
 
-	Vector rotate_(const Vector& v, dimension<GK::GK_3D>) const {
+	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
 		const gkfloat theta = norm(this->angle);
 		const direction<GK::GK_3D> axis(this->angle);
 

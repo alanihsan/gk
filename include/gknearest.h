@@ -13,7 +13,7 @@
 
 namespace gk {
 
-namespace inner {
+namespace impl {
 
 template<typename Geometry, typename Vector, typename GeometryCategory>
 Vector nearest(const Geometry& g, const Vector& v, GeometryCategory);
@@ -64,11 +64,11 @@ Vector nearest(const Plane& plane, const Vector& v, plane_tag) {
  */
 template<typename Geometry, typename Vector>
 Vector nearest(const Geometry& g, const Vector& v) {
-	return inner::nearest(g, v,
+	return impl::nearest(g, v,
 			typename geometry_traits<Geometry>::geometry_category());
 }
 
-namespace inner {
+namespace impl {
 
 template<typename Geometry1, typename Geometry2, typename Geometry1Category,
 		typename Geometry2Category>
@@ -120,7 +120,7 @@ template<typename Geometry1, typename Geometry2>
 std::pair<typename geometry_traits<Geometry1>::vector_type,
 		typename geometry_traits<Geometry2>::vector_type> nearest_between(
 		const Geometry1& a, const Geometry2& b) {
-	return inner::nearest_between(a, b,
+	return impl::nearest_between(a, b,
 			typename geometry_traits<Geometry1>::geometry_category(),
 			typename geometry_traits<Geometry2>::geometry_category());
 }
