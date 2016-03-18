@@ -87,7 +87,7 @@ namespace inner {
 
 template<typename Vector1, typename Vector2, typename Result>
 void cross_kernel(const Vector1&, const Vector2&, Result& r,
-		dimension<GK::GK_2D>) {
+		dimension_tag<GK::GK_2D>) {
 	typedef typename vector_traits<Result>::value_type value_type;
 	r[GK::X] = value_type(GK_FLOAT_ZERO);
 	r[GK::Y] = value_type(GK_FLOAT_ZERO);
@@ -95,7 +95,7 @@ void cross_kernel(const Vector1&, const Vector2&, Result& r,
 
 template<typename Vector1, typename Vector2, typename Result>
 void cross_kernel(const Vector1& u, const Vector2& v, Result& r,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 	r[GK::X] = u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y];
 	r[GK::Y] = u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z];
 	r[GK::Z] = u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X];
@@ -142,7 +142,7 @@ private:
 	 * @param d
 	 */
 	template<typename Vector, size_t Dimension>
-	void Normalize_(const Vector& v, direction& d, dimension<Dimension>) {
+	void Normalize_(const Vector& v, direction& d, dimension_tag<Dimension>) {
 		const typename divides_result<gkfloat,
 				typename vector_traits<Vector>::value_type>::value_type F =
 				gkfloat(
@@ -153,7 +153,7 @@ private:
 	}
 
 	template<typename Vector>
-	void Normalize_(const Vector& v, direction& d, dimension<GK::GK_2D>) {
+	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_2D>) {
 		const typename divides_result<gkfloat,
 				typename vector_traits<Vector>::value_type>::value_type F =
 				gkfloat(
@@ -163,7 +163,7 @@ private:
 	}
 
 	template<typename Vector>
-	void Normalize_(const Vector& v, direction& d, dimension<GK::GK_3D>) {
+	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_3D>) {
 		const typename divides_result<gkfloat,
 				typename vector_traits<Vector>::value_type>::value_type F =
 				gkfloat(
@@ -196,7 +196,7 @@ public:
 	template<typename Vector>
 	explicit direction(const Vector& v) :
 			x_() {
-		Normalize_(v, *this, dimension<DimensionSize>());
+		Normalize_(v, *this, dimension_tag<DimensionSize>());
 	}
 
 	~direction() {
@@ -305,13 +305,13 @@ namespace inner {
 
 template<size_t Dimension, typename Vector>
 direction<Dimension> gk_normal_direction(const Vector&, const Vector&,
-		dimension<Dimension>) {
+		dimension_tag<Dimension>) {
 	return direction<Dimension>();
 }
 
 template<typename Vector>
 direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 	const typename vector_traits<Vector>::value_type Unit(GK_FLOAT_ONE);
 
 	Vector r;
@@ -335,7 +335,7 @@ template<typename Vector>
 direction<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
 		const Vector& v) {
 	return inner::gk_normal_direction(u, v,
-			dimension<vector_traits<Vector>::Dimension>());
+			dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 /**
@@ -410,11 +410,11 @@ struct rotate {
 	}
 
 	Vector operator()(const Vector& v) const {
-		return rotate_(v, dimension<vector_traits<Vector>::Dimension>());
+		return rotate_(v, dimension_tag<vector_traits<Vector>::Dimension>());
 	}
 
 private:
-	Vector rotate_(const Vector& v, dimension<GK::GK_2D>) const {
+	Vector rotate_(const Vector& v, dimension_tag<GK::GK_2D>) const {
 		const gkfloat sin = std::sin(this->angle);
 		const gkfloat cos = std::cos(this->angle);
 
@@ -424,7 +424,7 @@ private:
 		return r;
 	}
 
-	Vector rotate_(const Vector& v, dimension<GK::GK_3D>) const {
+	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
 		const gkfloat theta = norm(this->angle);
 		const direction<GK::GK_3D> axis(this->angle);
 

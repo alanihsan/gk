@@ -35,18 +35,6 @@ public:
 	typedef knotvector<Parameter> knotvector_type;
 	typedef std::vector<Vector> control_points;
 
-private:
-	/**
-	 * @brief Computes the degree of this B-spline.
-	 * @param knotvector_size
-	 * @param controls_size
-	 * @return
-	 */
-	static size_t compute_degree_(size_t knotvector_size,
-			size_t controls_size) {
-		return knotvector_size - controls_size - 1;
-	}
-
 public:
 
 	/**
@@ -101,13 +89,8 @@ public:
 	 * @return
 	 */
 	size_t degree() const {
-		return this->compute_degree_(size_of(this->T_), this->Q_.size());
+		return this->degree_();
 	}
-
-//	std::pair<parameter, parameter> domain() const {
-//		return std::make_pair(this->T_[this->degree()],
-//				this->T_[this->Q_.size()]);
-//	}
 
 	/**
 	 * @brief Returns the knot vector.
@@ -146,15 +129,14 @@ public:
 	 * @return The other.
 	 */
 	bspline subdivide(const Parameter& t, gkselection selection = GK::Upper) {
-		const gksize degree = this->compute_degree_(this->T_.size(),
-				this->Q_.size());
-		const gksize order = degree + 1;
+		const std::size_t degree = this->degree_();
+		const std::size_t order = degree + 1;
 
 		if (t < this->T_[degree] || t > this->T_[this->Q_.size()]) {
 			return bspline();
 		}
 
-		for (gksize i = 0; i < order; ++i) {
+		for (std::size_t i = 0; i < order; ++i) {
 			this->insert_knot_(t);
 		}
 
@@ -164,43 +146,44 @@ public:
 
 		T_const_iterator position = std::upper_bound(first, end, t);
 
-		const gksize k = std::distance(this->T_.begin(), position);
+		const typename std::iterator_traits<T_const_iterator>::difference_type d =
+				std::distance(this->T_.begin(), position);
 
 		if (selection == GK::Upper) {
 			const knotvector_type other_knotvector(position - order,
 					this->T_.end());
 			const control_points other_control_points(
-					this->Q_.begin() + k - order, this->Q_.end());
+					this->Q_.begin() + d - order, this->Q_.end());
 
 			erase_elements(this->T_, position, this->T_.end());
-			this->Q_.erase(this->Q_.begin() + k - order, this->Q_.end());
+			this->Q_.erase(this->Q_.begin() + d - order, this->Q_.end());
 
 			return bspline(other_knotvector, other_control_points);
 
 		} else {
 			const knotvector_type other_knotvector(this->T_.begin(), position);
 			const control_points other_control_points(this->Q_.begin(),
-					this->Q_.begin() + k - order);
+					this->Q_.begin() + d - order);
 
 			this->T_.erase(this->T_.begin(), position - order);
-			this->Q_.erase(this->Q_.begin(), this->Q_.begin() + k - order);
+			this->Q_.erase(this->Q_.begin(), this->Q_.begin() + d - order);
 
 			return bspline(other_knotvector, other_control_points);
 		}
 	}
 
-	/**
-	 * @brief
-	 * @param selection
-	 * @return
-	 */
-	bspline subdivide(gkselection selection = GK::Upper) {
-		const Parameter t_max = this->T_[this->Q_.size()];
-		const Parameter t_min = this->T_[this->compute_degree_(this->T_.size(),
-				this->Q_.size())];
-
-		return subdivide(0.5 * (t_max + t_min), selection);
-	}
+//	/**
+//	 * @brief
+//	 * @param selection
+//	 * @return
+//	 */
+//	bspline subdivide(gkselection selection = GK::Upper) {
+//		const Parameter t_max = this->T_[this->Q_.size()];
+//		const Parameter t_min = this->T_[this->compute_degree_(this->T_.size(),
+//				this->Q_.size())];
+//
+//		return subdivide(0.5 * (t_max + t_min), selection);
+//	}
 
 //	void derivatise() {
 //		const size_t degree = this->compute_degree_(this->T_.size(),
@@ -255,9 +238,12 @@ private:
 	control_points Q_;
 
 private:
+	size_t degree_() const {
+		return bspline_degree(this->Q_.size(), this->T_.size());
+	}
+
 	void insert_knot_(const Parameter& t) {
-		const size_t degree = this->compute_degree_(this->T_.size(),
-				this->Q_.size());
+		const size_t degree = this->degree_();
 
 		const std::pair<Parameter, Parameter> D = domain(degree, this->T_);
 		if (t < D.first || t > D.second) {
@@ -356,17 +342,6 @@ aabb<Vector> boundary(const bspline<Vector, Parameter>& x) {
 }
 
 template<typename Vector, typename Parameter>
-struct curve_traits<bspline<Vector, Parameter> > : public geometry_traits<
-		bspline<Vector, Parameter> > {
-	typedef geometry_traits<bspline<Vector, Parameter> > base;
-	typedef Parameter parameter;
-	typedef typename vector_traits<Vector>::value_type value_type;
-	typedef value_type distance_type;
-	typedef value_type length_type;
-	typedef aabb<Vector> boundary_type;
-};
-
-template<typename Vector, typename Parameter>
 bspline<Vector, Parameter> derivatatise(const bspline<Vector, Parameter>& r) {
 
 	typedef typename bspline<Vector, Parameter>::knotvector_type knotvector;
@@ -391,6 +366,17 @@ bspline<Vector, Parameter> derivatatise(const bspline<Vector, Parameter>& r) {
 
 	return bspline<Vector>(U_first, U_last, P.begin(), P.end());
 }
+
+template<typename Vector, typename Parameter>
+struct curve_traits<bspline<Vector, Parameter> > : public geometry_traits<
+		bspline<Vector, Parameter> > {
+	typedef geometry_traits<bspline<Vector, Parameter> > base;
+	typedef Parameter parameter;
+	typedef typename vector_traits<Vector>::value_type value_type;
+	typedef value_type distance_type;
+	typedef value_type length_type;
+	typedef aabb<Vector> boundary_type;
+};
 
 }  // namespace gk
 

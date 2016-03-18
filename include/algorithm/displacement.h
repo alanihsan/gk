@@ -29,13 +29,13 @@ typename displacement_result_impl<Geometry1, Geometry2>::type diplacement_impl(
 
 template<typename Line>
 typename displacement_result_impl<Line, Line>::type displacement_line_line_impl(
-		const Line& l, const Line& m, dimension<GK::GK_2D>) {
+		const Line& l, const Line& m, dimension_tag<GK::GK_2D>) {
 	return curve_traits<Line>::vector_type(); // returns zero vector.
 }
 
 template<typename Line>
 typename displacement_result_impl<Line, Line>::type displacement_line_line_impl(
-		const Line& l, const Line& m, dimension<GK::GK_3D>) {
+		const Line& l, const Line& m, dimension_tag<GK::GK_3D>) {
 
 }
 

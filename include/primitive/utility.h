@@ -21,7 +21,7 @@ namespace gk {
 namespace inner {
 template<typename Vector, typename Tolerance>
 bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
-		const Tolerance& epsilon, dimension<GK::GK_2D>) {
+		const Tolerance& epsilon, dimension_tag<GK::GK_2D>) {
 	return (std::abs(u[GK::X] - v[GK::X]) < epsilon)
 			& (std::abs(u[GK::Y] - v[GK::Y]) < epsilon);
 }
@@ -38,7 +38,7 @@ bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
  */
 template<typename Vector, typename Tolerance>
 bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
-		const Tolerance& epsilon, dimension<GK::GK_3D>) {
+		const Tolerance& epsilon, dimension_tag<GK::GK_3D>) {
 	return (std::abs(u[GK::X] - v[GK::X]) < epsilon)
 			& (std::abs(u[GK::Y] - v[GK::Y]) < epsilon)
 			& (std::abs(u[GK::Z] - v[GK::Z]) < epsilon);
@@ -53,7 +53,7 @@ bool is_parallel(const direction<Vector>& u, const direction<Vector>& v,
 				typename vector_traits<Vector>::value_type>::epsilon()) {
 
 	return inner::is_parallel(u, v, epsilon,
-			dimension<vector_traits<Vector>::Dimension>());
+			dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 template<typename Vector,

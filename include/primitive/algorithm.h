@@ -354,7 +354,7 @@ namespace inner {
 
 template<typename Vector>
 bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
-		dimension<GK::GK_2D>) {
+		dimension_tag<GK::GK_2D>) {
 
 	std::pair<line<Vector>, line<Vector> > x_lines = std::make_pair(
 			line<Vector>(boundary.min()), basis()[GK::Y]);
@@ -364,7 +364,7 @@ bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
 
 template<typename Vector>
 bool test_itersect(const line<Vector>& l, const aabb<Vector>& boundary,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 
 }
 

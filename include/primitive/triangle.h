@@ -132,7 +132,7 @@ namespace inner {
  */
 template<typename Vector, typename AreaValue>
 AreaValue area_of_triangle(const Vector& first, const Vector& second,
-		const Vector& third, dimension<GK::GK_2D>) {
+		const Vector& third, dimension_tag<GK::GK_2D>) {
 
 }
 
@@ -146,7 +146,7 @@ AreaValue area_of_triangle(const Vector& first, const Vector& second,
  */
 template<typename Vector, typename AreaValue>
 AreaValue area_of_triangle(const Vector& first, const Vector& second,
-		const Vector& third, dimension<GK::GK_3D>) {
+		const Vector& third, dimension_tag<GK::GK_3D>) {
 
 }
 

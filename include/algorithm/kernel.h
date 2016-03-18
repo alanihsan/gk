@@ -353,7 +353,7 @@ OutputIterator intersect_line_plane(const Vector& line_reference,
 template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator gk_intersect_line_box(const Vector& reference,
 		const direction<GK::GK_2D>& u, const Vector& box_a, const Vector& box_b,
-		const Tolerance& epsilon, OutputIterator result, dimension<GK::GK_2D>) {
+		const Tolerance& epsilon, OutputIterator result, dimension_tag<GK::GK_2D>) {
 
 	typedef typename vector_traits<Vector>::value_type value_type;
 	const value_type unit = value_type(GK_FLOAT_ONE);
@@ -410,7 +410,7 @@ OutputIterator gk_intersect_line_box(const Vector& reference,
 template<typename Vector, typename Tolerance, typename OutputIterator>
 OutputIterator gk_intersect_line_box(const Vector& reference,
 		const direction<GK::GK_3D>& u, const Vector& box_a, const Vector& box_b,
-		const Tolerance& epsilon, OutputIterator result, dimension<GK::GK_3D>) {
+		const Tolerance& epsilon, OutputIterator result, dimension_tag<GK::GK_3D>) {
 	return result;
 }
 
@@ -436,7 +436,7 @@ OutputIterator intersect_line_box(const Vector& reference,
 		const direction<Dimension>& u, const Vector& box_pt1, const Vector& box_pt2,
 		const Tolerance& epsilon, OutputIterator result) {
 	return gk_intersect_line_box(reference, u, box_pt1, box_pt2, epsilon, result,
-			dimension<vector_traits<Vector>::Dimension>());
+			dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 }  // namespace alg

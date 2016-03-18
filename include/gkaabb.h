@@ -44,7 +44,7 @@ public:
 
 	aabb(const vector_type& u, const vector_type& v) :
 			min_(), max_() {
-		this->set_(u, v, dimension<Dimension>());
+		this->set_(u, v, dimension_tag<Dimension>());
 	}
 
 	template<class InputIterator>
@@ -103,7 +103,7 @@ private:
 
 	template<std::size_t Dimension>
 	void set_(const vector_type& u, const vector_type& v,
-			dimension<Dimension>) {
+			dimension_tag<Dimension>) {
 		for (std::size_t i = 0; i < Dimension; ++i) {
 			(u[i] < v[i]) ?
 					this->min_[i] = u[i], this->max_[i] = v[i] : this->min_[i] =
@@ -112,7 +112,7 @@ private:
 	}
 
 	void set_(const vector_type& u, const vector_type& v,
-			dimension<GK::GK_2D>) {
+			dimension_tag<GK::GK_2D>) {
 		(u[GK::X] < v[GK::X]) ?
 				(this->min_[GK::X] = u[GK::X], this->max_[GK::X] = v[GK::X]) :
 				(this->min_[GK::X] = v[GK::X], this->max_[GK::X] = u[GK::X]);
@@ -123,14 +123,19 @@ private:
 	}
 
 	void set_(const vector_type& u, const vector_type& v,
-			dimension<GK::GK_3D>) {
-		set_(u, v, dimension<GK::GK_2D>());
+			dimension_tag<GK::GK_3D>) {
+		set_(u, v, dimension_tag<GK::GK_2D>());
 
 		(u[GK::Z] < v[GK::Z]) ?
 				this->min_[GK::Z] = u[GK::Z], this->max_[GK::Z] = v[GK::Z] :
 				this->min_[GK::Z] = v[GK::Z], this->max_[GK::Z] = u[GK::Z];
 	}
 };
+
+template<typename Vector>
+bool is_include(const aabb<Vector>& box,const Vector& v){
+
+}
 
 template<typename Vector>
 aabb<Vector> operator&(const aabb<Vector>& a, const aabb<Vector>& b);
@@ -143,7 +148,7 @@ namespace inner {
 template<typename Vector>
 bool is_intersect_impl(const aabb<Vector>& a, const aabb<Vector>& b,
 		const typename vector_traits<Vector>::value_type& tolerance,
-		dimension<GK::GK_2D>) {
+		dimension_tag<GK::GK_2D>) {
 	const Vector u = a.min() - b.max();
 	const Vector v = b.min() - a.max();
 
@@ -159,7 +164,7 @@ bool is_intersect_impl(const aabb<Vector>& a, const aabb<Vector>& b,
 template<typename Vector>
 bool is_intersect_impl(const aabb<Vector>& a, const aabb<Vector>& b,
 		const typename vector_traits<Vector>::value_type& tolerance,
-		dimension<GK::GK_3D>) {
+		dimension_tag<GK::GK_3D>) {
 	const Vector u = a.min() - b.max();
 	const Vector v = b.min() - a.max();
 
@@ -180,7 +185,7 @@ template<typename Vector, typename Tolerance>
 bool is_intersect(const aabb<Vector>& a, const aabb<Vector>& b,
 		const Tolerance& epsilon) {
 	return inner::is_intersect_impl(a, b, epsilon,
-			dimension<vector_traits<Vector>::Dimension>());
+			dimension_tag<vector_traits<Vector>::Dimension>());
 }
 
 template<typename Geometry>
