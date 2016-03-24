@@ -228,7 +228,7 @@ public:
 	template<typename InputIterator>
 	explicit direction(InputIterator x) :
 			x_() {
-		std::copy_
+
 	}
 
 //	template<typename Vector>
