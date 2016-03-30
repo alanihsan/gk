@@ -204,7 +204,7 @@ private:
 		const L_t L = std::sqrt(L2);
 
 		typedef divides_result<gkfloat, L_t>::value_type InvL_t;
-		const InvL_t invL=gkfloat(GK_FLOAT_ONE)/L;
+		const InvL_t invL = gkfloat(GK_FLOAT_ONE) / L;
 
 //		std::transform(first,last,result,std::bind2nd())
 	}
