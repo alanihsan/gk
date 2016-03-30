@@ -44,11 +44,14 @@ typename multiplies_result<typename vector_traits<Vector1>::value_type,
 		typename vector_traits<Vector2>::value_type>::value_type dot(
 		const Vector1& u, const Vector2& v) {
 
+#ifdef GK_DEBUG
+#endif
+
 	typedef typename multiplies_result<
 			typename vector_traits<Vector1>::value_type,
 			typename vector_traits<Vector2>::value_type>::value_type result_type;
 
-	const size_t Dimension = vector_traits<Vector1>::Dimension;
+	const std::size_t Dimension = vector_traits<Vector1>::Dimension;
 
 	result_type r = result_type(GK_FLOAT_ZERO);
 	for (size_t i = 0; i < Dimension; ++i) {
@@ -189,20 +192,21 @@ private:
 
 	template<typename InputIterator, typename OutputIterator>
 	void normalize_(InputIterator first, OutputIterator result) {
-		typedef typename multiplies_result<
-				typename std::iterator_traits<InputIterator>::value_type,
-				typename std::iterator_traits<InputIterator>::value_type>::value_type T;
+		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
+		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
 
 		InputIterator last = first;
 		std::advance(last, DimensionSize);
-		const typename divides_result<gkfloat,
-				typename std::iterator_traits<InputIterator>::value_type>::value_type F =
-				gkfloat(GK_FLOAT_ONE)
-						/ std::sqrt(
-								std::inner_product(first, last, first,
-										T(GK_FLOAT_ZERO)));
 
-//		std::transform(first,last,result,std::bind2nd(std::multiplies<gkfloat>))
+		const L2_t L2 = std::inner_product(first, last, first,
+				L2_t(GK_FLOAT_ZERO));
+
+		const L_t L = std::sqrt(L2);
+
+		typedef divides_result<gkfloat, L_t>::value_type InvL_t;
+		const InvL_t invL=gkfloat(GK_FLOAT_ONE)/L;
+
+//		std::transform(first,last,result,std::bind2nd())
 	}
 
 public:
