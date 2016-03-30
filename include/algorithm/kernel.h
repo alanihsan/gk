@@ -384,11 +384,13 @@ OutputIterator gk_intersect_line_box(const Vector& reference,
 		intersect_2lines(reference, u, box.max(), basis<GK::GK_2D>()[d],
 				epsilon, std::inserter(Y, Y.begin()));
 
-		const std::pair<value_type, Vector> S = std::make_pair(
-				dot(X.front() - reference, u), X.front());
+		const Vector x = X.front() - reference;
+		const std::pair<value_type, Vector> S = std::make_pair(dot(x, u),
+				X.front());
 
-		const std::pair<value_type, Vector> T = std::make_pair(
-				dot(Y.front() - reference, u), Y.front());
+		const Vector y = Y.front() - reference;
+		const std::pair<value_type, Vector> T = std::make_pair(dot(y, u),
+				Y.front());
 
 		(S.first < T.first) ?
 				(in.insert(S), out.insert(T)) : (out.insert(S), in.insert(T));

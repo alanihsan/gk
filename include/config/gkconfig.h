@@ -31,20 +31,6 @@
 #	define GK_SIZEOF_FLOAT 8
 #endif
 
-/*
- * Algebra libraries
- */
-
-#define USE_EIGEN 1
-
-#ifndef GK_ALGEBRA_LIB
-#   define GK_ALGEBRA_LIB USE_EIGEN
-#endif
-
-#if GK_ALGEBRA_LIB==USE_EIGEN
-#   define GK_EIGEN_ENABLED
-#endif
-
 #ifndef GK_FUNCTION_NAME
 #	if defined(__PRETTY_FUNCTION__)
 #		define __PRETTY_FUNCTION__ GK_FUNCTION_NAME
@@ -58,12 +44,12 @@
 #else
 namespace gk {
 
-inline void gk_replacement_assert(const char* file, int line,
-		const char* function, const char* condition) {
-	std::cout << file << ":" << line << ":" << " Assertion " << condition
-			<< "failed." << std::endl;
-	std::abort();
-}
+	inline void gk_replacement_assert(const char* file, int line,
+			const char* function, const char* condition) {
+		std::cout << file << ":" << line << ":" << " Assertion " << condition
+		<< "failed." << std::endl;
+		std::abort();
+	}
 
 #	define gk_static_assert(condition) \
 	do { \

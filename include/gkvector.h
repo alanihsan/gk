@@ -26,7 +26,7 @@ namespace gk {
 
 /**
  * @brief Traits of a vector.
- * @tparam Vector A type of a vector in a vector space.
+ * @tparam Vector The type of the vector in a vector space.
  *
  * @date 2016/02/24
  * @author Takuya Makimoto
@@ -35,8 +35,46 @@ template<typename Vector>
 struct vector_traits {
 	typedef typename Vector::value_type value_type; ///< Type of elements in a vector.
 
-	static const size_t Dimension = Vector::Dimension; ///< A dimension size of a vector space.
-	static const bool IsHomogeneous = false;
+	static const size_t Dimension = Vector::Dimension; ///< The dimension size of the vector space.
+	static const bool IsHomogeneous = false; ///<
+
+	typedef value_type* iterator;
+	typedef const value_type* const_iterator;
+	typedef std::reverse_iterator<iterator> reverse_iterator;
+	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+	static const_iterator begin(const Vector& v) {
+		return v.begin();
+	}
+
+	static iterator begin(Vector& v) {
+		return v.begin();
+	}
+
+	static const_iterator end(const Vector& v) {
+		return v.end();
+	}
+
+	static iterator end(Vector& v) {
+		return v.end();
+	}
+
+	static const_reverse_iterator rbegin(const Vector& v) {
+		return std::reverse_iterator<const_iterator>(v.end());
+	}
+
+	static reverse_iterator rbegin(Vector& v) {
+		return std::reverse_iterator<iterator>(v.end());
+	}
+
+	static const_reverse_iterator rend(const Vector& v) {
+		return std::reverse_iterator<const_iterator>(v.begin());
+	}
+
+	static reverse_iterator rend(Vector& v) {
+		return std::reverse_iterator<iterator>(v.begin());
+	}
+
 };
 
 template<typename Vector1, typename Vector2>
@@ -139,74 +177,20 @@ public:
 
 private:
 
-//	/**
-//	 * @brief Normalize a vector.
-//	 * @param v
-//	 * @param d
-//	 */
-//	template<typename Vector, size_t Dimension>
-//	void Normalize_(const Vector& v, direction& d, dimension_tag<Dimension>) {
-//		const typename divides_result<gkfloat,
-//				typename vector_traits<Vector>::value_type>::value_type F =
-//				gkfloat(
-//				GK_FLOAT_ONE) / norm(v);
-//		for (size_t i = 0; i < DimensionSize; ++i) {
-//			d.x_[i] = F * v[i];
-//		}
-//	}
-//
-//	template<typename Vector>
-//	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_2D>) {
-//		const typename divides_result<gkfloat,
-//				typename vector_traits<Vector>::value_type>::value_type F =
-//				gkfloat(
-//				GK_FLOAT_ONE) / norm(v);
-//		d.x_[GK::X] = F * v[GK::X];
-//		d.x_[GK::Y] = F * v[GK::Y];
-//	}
-//
-//	template<typename Vector>
-//	void Normalize_(const Vector& v, direction& d, dimension_tag<GK::GK_3D>) {
-//		const typename divides_result<gkfloat,
-//				typename vector_traits<Vector>::value_type>::value_type F =
-//				gkfloat(
-//				GK_FLOAT_ONE) / norm(v);
-//		d.x_[GK::X] = F * v[GK::X];
-//		d.x_[GK::Y] = F * v[GK::Y];
-//		d.x_[GK::Z] = F * v[GK::Z];
-//	}
-
-	template<typename InputIterator, typename OutputIterator>
-	void copy_(InputIterator first, OutputIterator result,
-			std::input_iterator_tag) {
-		InputIterator last = first;
-		std::advance(last, DimensionSize);
-		std::copy(first, last, result);
-	}
-
-	template<typename InputIterator, typename OutputIterator>
-	void copy_(InputIterator first, OutputIterator result,
-			std::random_access_iterator_tag) {
-		std::copy(first, first + DimensionSize, result);
-	}
-
-	template<typename InputIterator, typename OutputIterator>
-	void normalize_(InputIterator first, OutputIterator result) {
-		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
-		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
-
-		InputIterator last = first;
-		std::advance(last, DimensionSize);
-
-		const L2_t L2 = std::inner_product(first, last, first,
-				L2_t(GK_FLOAT_ZERO));
-
-		const L_t L = std::sqrt(L2);
-
-		typedef divides_result<gkfloat, L_t>::value_type InvL_t;
-		const InvL_t invL=gkfloat(GK_FLOAT_ONE)/L;
-
-//		std::transform(first,last,result,std::bind2nd())
+	/**
+	 * @brief Normalize a vector.
+	 * @param v
+	 * @param d
+	 */
+	template<typename Vector>
+	void Normalize_(const Vector& v, direction& d) {
+		const typename divides_result<gkfloat,
+				typename vector_traits<Vector>::value_type>::value_type F =
+				gkfloat(
+				GK_FLOAT_ONE) / norm(v);
+		for (size_t i = 0; i < DimensionSize; ++i) {
+			d.x_[i] = F * v[i];
+		}
 	}
 
 public:
@@ -229,8 +213,14 @@ public:
 		std::copy(other.x_, other.x_ + ElementSize, this->x_);
 	}
 
-	template<typename InputIterator>
-	explicit direction(InputIterator x) :
+//	template<typename InputIterator>
+//	explicit direction(InputIterator x) :
+//			x_() {
+//		direction::normalize_(x, this->x_);
+//	}
+
+	template<typename Vector>
+	explicit direction(const Vector& v) :
 			x_() {
 
 	}
