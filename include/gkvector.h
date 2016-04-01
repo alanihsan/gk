@@ -183,7 +183,7 @@ private:
 	 * @param d
 	 */
 	template<typename Vector>
-	void Normalize_(const Vector& v, direction& d) {
+	static void Normalize_(const Vector& v, direction& d) {
 		const typename divides_result<gkfloat,
 				typename vector_traits<Vector>::value_type>::value_type F =
 				gkfloat(
@@ -213,23 +213,11 @@ public:
 		std::copy(other.x_, other.x_ + ElementSize, this->x_);
 	}
 
-//	template<typename InputIterator>
-//	explicit direction(InputIterator x) :
-//			x_() {
-//		direction::normalize_(x, this->x_);
-//	}
-
 	template<typename Vector>
 	explicit direction(const Vector& v) :
 			x_() {
-
+		Normalize_(v, *this);
 	}
-
-//	template<typename Vector>
-//	explicit direction(const Vector& v) :
-//			x_() {
-//		Normalize_(v, *this, dimension_tag<DimensionSize>());
-//	}
 
 	~direction() {
 	}
