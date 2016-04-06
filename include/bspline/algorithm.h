@@ -31,9 +31,8 @@ OutputIterator position_at(const bspline<Vector, Parameter>& r,
  * Intersection Algorithm for B-spline.
  */
 
-template<typename Vector, typename KnotVector1, typename KnotVector2>
-struct intersect_result<bspline<Vector, KnotVector1>,
-		bspline<Vector, KnotVector2> > {
+template<typename Vector, typename Parameter1, typename Parameter2>
+struct intersect_result<bspline<Vector, Parameter1>, bspline<Vector, Parameter2> > {
 	typedef Vector value_type;
 };
 
@@ -76,9 +75,9 @@ OutputIterator intersect_bspline_segment(const bspline<Vector, Parameter>& a,
 	return result;
 }
 
-template<typename Vector, typename KnotVector, typename Line,
-		typename Tolerance, typename OutputIterator>
-OutputIterator intersect_kernel(const bspline<Vector, KnotVector>& a,
+template<typename Vector, typename Parameter, typename Line, typename Tolerance,
+		typename OutputIterator>
+OutputIterator intersect_kernel(const bspline<Vector, Parameter>& a,
 		const Line& b, const Tolerance& epsilon, OutputIterator result,
 		line_tag) {
 	typedef typename vector_traits<Vector>::value_type value_type;

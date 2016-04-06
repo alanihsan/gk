@@ -133,8 +133,8 @@ private:
 };
 
 template<typename Vector>
-bool is_include(const aabb<Vector>& box,const Vector& v){
-
+bool is_include(const aabb<Vector>& box, const Vector& v) {
+	return false;
 }
 
 template<typename Vector>
