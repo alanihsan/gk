@@ -17,52 +17,52 @@ class network {
 public:
 
 	network() :
-			column_size_(), Q_() {
+			major_size_(), Q_() {
 	}
 
 	network(const network& other) :
-			column_size_(other.column_size_), Q_(other.Q_) {
+			major_size_(other.major_size_), Q_(other.Q_) {
 	}
 
-	network(std::size_t row_size, std::size_t column_size) :
-			column_size_(column_size), Q_(row_size * column_size) {
+	network(std::size_t major_size, std::size_t minor_size) :
+			major_size_(major_size), Q_(major_size * minor_size) {
 	}
 
 	template<typename InputIterator>
 	network(InputIterator first, InputIterator last, std::size_t column_size) :
-			column_size_(column_size), Q_(first, last) {
+			major_size_(column_size), Q_(first, last) {
 	}
 
 	~network() {
 	}
 
-	std::size_t row_size() const {
-		return this->row_size_();
+	std::size_t major_size() const {
+		return this->major_size_;
 	}
 
-	std::size_t column_size() const {
-		return this->column_size_;
+	std::size_t minor_size() const {
+		return this->minor_size_();
 	}
 
-	const Vector& operator()(std::size_t row, std::size_t column) const {
-		return this->Q_[this->element_index_(row, column)];
+	const Vector& operator()(std::size_t major, std::size_t minor) const {
+		return this->Q_[this->element_index_(major, minor)];
 	}
 
-	Vector& operator()(std::size_t row, std::size_t column) {
-		return this->Q_[this->element_index_(row, column)];
+	Vector& operator()(std::size_t major, std::size_t minor) {
+		return this->Q_[this->element_index_(major, minor)];
 	}
 
 private:
-	std::size_t column_size_;
+	std::size_t major_size_;
 	std::vector<Vector> Q_;
 
 private:
-	std::size_t row_size_() const {
-		return this->Q_.size() - this->column_size_;
+	std::size_t minor_size_() const {
+		return this->Q_.size() - this->major_size_;
 	}
 
-	std::size_t element_index_(std::size_t row, std::size_t column) const {
-		return column + row * this->column_size_;
+	std::size_t element_index_(std::size_t major, std::size_t minor) const {
+		return major + minor * this->major_size_;
 	}
 };
 
@@ -76,10 +76,62 @@ class bsurface {
 public:
 	typedef Vector vector_type;
 
+public:
+	bsurface() :
+			S_(), T_(), Q_() {
+	}
+
+	bsurface(const bsurface& other) :
+			S_(other.S_), T_(other.T_), Q_(other.Q_) {
+	}
+
+	~bsurface() {
+	}
+
+	std::size_t major_degree() const {
+		return this->major_degree_();
+	}
+
+	std::size_t minor_degree() const {
+		return this->minor_degree_();
+	}
+
+	Vector operator()(const Parameter& s, const Parameter& t) const {
+		std::vector<gkfloat> M;
+		basis_function(this->major_degree_(), this->S_.begin(), this->S_.end(),
+				s, std::inserter(M, M.begin()));
+
+		std::vector<gkfloat> N;
+		basis_function(this->minor_degree_(), this->T_.begin(), this->T_.end(),
+				t, std::inserter(N, N.begin()));
+
+	}
+
+	bsurface& operator=(const bsurface& rhs) {
+		if (&rhs == this) {
+			return *this;
+		}
+
+		this->S_ = rhs.S_;
+		this->T_ = rhs.T_;
+		this->Q_ = rhs.Q_;
+
+		return *this;
+	}
+
 private:
-	knotvector<Parameter> S_;
-	knotvector<Parameter> T_;
-	network<Vector> Q_;
+	knotvector<Parameter> S_; ///< The knot vector in major order.
+	knotvector<Parameter> T_; ///< The knot vector in minor order.
+	network<Vector> Q_; ///< The control points.
+
+private:
+	std::size_t major_degree_() const {
+		return bspline_degree(this->Q_.major_size(), this->S_.size());
+	}
+
+	std::size_t minor_degree_() const {
+		return bspline_degree(this->Q_.minor_size(), this->T_.size());
+	}
 };
 
 }  // namespace gk
