@@ -85,6 +85,14 @@ public:
 			S_(other.S_), T_(other.T_), Q_(other.Q_) {
 	}
 
+	template<typename KnotInputIterator1, typename KnotInputIterator2,
+			typename VectorInputIterator>
+	bsurface(KnotInputIterator1 S_first, KnotInputIterator1 S_last,
+			KnotInputIterator2 T_first, KnotInputIterator2 T_last,
+			VectorInputIterator Q_first, VectorInputIterator Q_last) :
+			S_(S_first, S_last), T_(T_first, T_last), Q_(Q_first, Q_last) {
+	}
+
 	~bsurface() {
 	}
 
@@ -105,6 +113,14 @@ public:
 		basis_function(this->minor_degree_(), this->T_.begin(), this->T_.end(),
 				t, std::inserter(N, N.begin()));
 
+		Vector r;
+		for (std::size_t i = 0; i < M.size(); ++i) {
+			for (std::size_t j = 0; j < N.size(); ++j) {
+				r += M[i] * N[j] * this->Q_(i, j);
+			}
+		}
+
+		return r;
 	}
 
 	bsurface& operator=(const bsurface& rhs) {
