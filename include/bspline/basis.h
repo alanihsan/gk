@@ -16,11 +16,11 @@ namespace gk {
 
 /**
  *
- * @param control_points_size
  * @param knot_vector_size
+ * @param control_points_size
  * @return
  */
-size_t bspline_degree(size_t control_points_size, size_t knot_vector_size) {
+size_t bspline_degree(size_t knot_vector_size,size_t control_points_size) {
 	return knot_vector_size - control_points_size - 1;
 }
 

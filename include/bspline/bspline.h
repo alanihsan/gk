@@ -208,8 +208,8 @@ public:
 
 	Vector operator()(const Parameter& t) const {
 		std::vector<Parameter> N(this->Q_.size());
-		basis_function(compute_degree_(this->T_.size(), this->Q_.size()),
-				this->T_.begin(), this->T_.end(), t, N.begin());
+		basis_function(degree_(), this->T_.begin(), this->T_.end(), t,
+				N.begin());
 
 		return std::inner_product(this->Q_.begin(), this->Q_.end(), N.begin(),
 				Vector());
@@ -239,7 +239,7 @@ private:
 
 private:
 	size_t degree_() const {
-		return bspline_degree(this->Q_.size(), this->T_.size());
+		return bspline_degree(this->T_.size(), this->Q_.size());
 	}
 
 	void insert_knot_(const Parameter& t) {
