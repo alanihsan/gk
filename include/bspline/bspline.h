@@ -32,7 +32,7 @@ template<typename Vector, typename Parameter>
 class bspline: public geometry<free_curve_tag, Vector> {
 public:
 	typedef Vector vector_type;
-	typedef knotvector<Parameter> knotvector_type;
+	typedef bspl::knotvector<Parameter> knotvector_type;
 	typedef std::vector<Vector> control_points;
 
 public:
@@ -114,6 +114,10 @@ public:
 	 */
 	control_points& controls() {
 		return this->Q_;
+	}
+
+	std::pair<Parameter, Parameter> domain() const {
+		return bspl::domain(this->degree_(), this->T_.begin(), this->T_.end());
 	}
 
 	void insert(const Parameter& t) {
@@ -208,8 +212,8 @@ public:
 
 	Vector operator()(const Parameter& t) const {
 		std::vector<Parameter> N(this->Q_.size());
-		basis_function(compute_degree_(this->T_.size(), this->Q_.size()),
-				this->T_.begin(), this->T_.end(), t, N.begin());
+		bspl::basis_function(degree_(), this->T_.begin(), this->T_.end(), t,
+				N.begin());
 
 		return std::inner_product(this->Q_.begin(), this->Q_.end(), N.begin(),
 				Vector());
@@ -239,13 +243,14 @@ private:
 
 private:
 	size_t degree_() const {
-		return bspline_degree(this->Q_.size(), this->T_.size());
+		return bspl::degree(this->T_.size(), this->Q_.size());
 	}
 
 	void insert_knot_(const Parameter& t) {
 		const size_t degree = this->degree_();
 
-		const std::pair<Parameter, Parameter> D = domain(degree, this->T_);
+		const std::pair<Parameter, Parameter> D = bspl::domain(degree,
+				this->T_.begin(), this->T_.end());
 		if (t < D.first || t > D.second) {
 			return;
 		}
@@ -270,16 +275,6 @@ private:
 	}
 
 };
-
-/**
- * @brief Computes the parameter domain of the B-spline @a r.
- * @param r
- * @return
- */
-template<typename Vector, typename Parameter>
-std::pair<Parameter, Parameter> domain(const bspline<Vector, Parameter>& r) {
-	return domain(r.degree(), r.knot_vector());
-}
 
 template<typename Vector, typename Parameter>
 std::pair<bspline<Vector, Parameter>, bspline<Vector, Parameter> > subdivide(
@@ -367,17 +362,6 @@ bspline<Vector, Parameter> derivatatise(const bspline<Vector, Parameter>& r) {
 	return bspline<Vector, Parameter>(U_first, U_last, P.begin(), P.end());
 }
 
-//template<typename Vector, typename Parameter>
-//struct curve_traits<bspline<Vector, Parameter> > : public geometry_traits<
-//		bspline<Vector, Parameter> > {
-//	typedef geometry_traits<bspline<Vector, Parameter> > base;
-//	typedef Parameter parameter;
-//	typedef typename vector_traits<Vector>::value_type value_type;
-//	typedef value_type distance_type;
-//	typedef value_type length_type;
-//	typedef aabb<Vector> boundary_type;
-//};
-
-}// namespace gk
+} // namespace gk
 
 #endif /* BSPLINE_BSPLINE_H_ */

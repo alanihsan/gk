@@ -142,11 +142,11 @@ private:
 
 private:
 	std::size_t major_degree_() const {
-		return bspline_degree(this->Q_.major_size(), this->S_.size());
+		return bspline_degree(this->S_.size(), this->Q_.major_size());
 	}
 
 	std::size_t minor_degree_() const {
-		return bspline_degree(this->Q_.minor_size(), this->T_.size());
+		return bspline_degree(this->T_.size(), this->Q_.minor_size());
 	}
 };
 

@@ -15,12 +15,17 @@
 namespace gk {
 
 /**
+ * Namespace about B-spline.
+ */
+namespace bspl {
+
+/**
  *
- * @param control_points_size
  * @param knot_vector_size
+ * @param control_points_size
  * @return
  */
-size_t bspline_degree(size_t control_points_size, size_t knot_vector_size) {
+size_t degree(size_t knot_vector_size, size_t control_points_size) {
 	return knot_vector_size - control_points_size - 1;
 }
 
@@ -30,7 +35,7 @@ size_t bspline_degree(size_t control_points_size, size_t knot_vector_size) {
  * @param knot_vector_size
  * @return
  */
-size_t bspline_control_points_size(size_t degree, size_t knot_vector_size) {
+size_t control_points_size(size_t degree, size_t knot_vector_size) {
 	return knot_vector_size - degree - 1;
 }
 
@@ -40,8 +45,21 @@ size_t bspline_control_points_size(size_t degree, size_t knot_vector_size) {
  * @param control_points_size
  * @return
  */
-size_t bspline_knot_vector_size(size_t degree, size_t control_points_size) {
+size_t knot_vector_size(size_t degree, size_t control_points_size) {
 	return control_points_size + degree + 1;
+}
+
+template<typename InputIterator>
+std::pair<typename std::iterator_traits<InputIterator>::value_type,
+		typename std::iterator_traits<InputIterator>::value_type> domain(
+		std::size_t degree, InputIterator first, InputIterator last) {
+
+	InputIterator s = first;
+	std::advance(s, degree);
+
+	InputIterator t = last;
+	std::advance(t, -degree - 1);
+	return std::make_pair(*s, *t);
 }
 
 /**
@@ -171,12 +189,6 @@ private:
 };
 
 template<typename Parameter>
-std::pair<Parameter, Parameter> domain(std::size_t degree,
-		const knotvector<Parameter>& T) {
-	return std::make_pair(T[degree], T[T.size() - degree - 1]);
-}
-
-template<typename Parameter>
 size_t knot_segment(const knotvector<Parameter>& T, std::size_t degree,
 		const Parameter& t) {
 	const std::size_t order = degree + 1;
@@ -279,6 +291,8 @@ OutputRandomAccessIterator basis_function(size_t degree,
 		return N + control_size;
 	}
 }
+
+}  // namespace bspl
 
 } // namespace gk
 
