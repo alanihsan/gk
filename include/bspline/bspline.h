@@ -211,7 +211,7 @@ public:
 //	}
 
 	Vector operator()(const Parameter& t) const {
-		std::vector<Parameter> N(this->Q_.size());
+		std::vector < Parameter > N(this->Q_.size());
 		bspl::basis_function(degree_(), this->T_.begin(), this->T_.end(), t,
 				N.begin());
 
