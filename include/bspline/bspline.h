@@ -212,7 +212,11 @@ public:
 
 	Vector operator()(const Parameter& t) const {
 		std::vector<Parameter> N(this->Q_.size());
+<<<<<<< HEAD
 		bspl::basis_function(degree_(), this->T_.begin(), this->T_.end(), t,
+=======
+		basis_function(degree_(), this->T_.begin(), this->T_.end(), t,
+>>>>>>> branch 'master' of https://github.com/tkymakimoto/gk.git
 				N.begin());
 
 		return std::inner_product(this->Q_.begin(), this->Q_.end(), N.begin(),
@@ -243,7 +247,11 @@ private:
 
 private:
 	size_t degree_() const {
+<<<<<<< HEAD
 		return bspl::degree(this->T_.size(), this->Q_.size());
+=======
+		return bspline_degree(this->T_.size(), this->Q_.size());
+>>>>>>> branch 'master' of https://github.com/tkymakimoto/gk.git
 	}
 
 	void insert_knot_(const Parameter& t) {

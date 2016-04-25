@@ -25,7 +25,11 @@ namespace bspl {
  * @param control_points_size
  * @return
  */
+<<<<<<< HEAD
 size_t degree(size_t knot_vector_size, size_t control_points_size) {
+=======
+size_t bspline_degree(size_t knot_vector_size,size_t control_points_size) {
+>>>>>>> branch 'master' of https://github.com/tkymakimoto/gk.git
 	return knot_vector_size - control_points_size - 1;
 }
 
