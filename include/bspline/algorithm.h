@@ -18,7 +18,6 @@ namespace gk {
 template<typename Vector, typename Parameter>
 Parameter nearest(const bspline<Vector, Parameter>& r, const Vector& v) {
 	const aabb<Vector> box = boundary(r);
-
 }
 
 template<typename Vector, typename Parameter, typename OutputIterator>

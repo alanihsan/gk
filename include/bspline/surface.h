@@ -15,6 +15,12 @@ namespace gk {
 template<typename Vector>
 class network {
 public:
+	typedef Vector* iterator;
+	typedef const Vector* const_iterator;
+	typedef std::reverse_iterator<iterator> reverse_iterator;
+	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+public:
 
 	network() :
 			major_size_(), Q_() {
@@ -29,8 +35,8 @@ public:
 	}
 
 	template<typename InputIterator>
-	network(InputIterator first, InputIterator last, std::size_t column_size) :
-			major_size_(column_size), Q_(first, last) {
+	network(InputIterator first, InputIterator last, std::size_t major_size) :
+			major_size_(major_size), Q_(first, last) {
 	}
 
 	~network() {
@@ -50,6 +56,17 @@ public:
 
 	Vector& operator()(std::size_t major, std::size_t minor) {
 		return this->Q_[this->element_index_(major, minor)];
+	}
+
+	network& operator=(const network& rhs) {
+		if (&rhs == this) {
+			return *this;
+		}
+
+		this->major_size_ = rhs.major_size_;
+		this->Q_ = rhs.Q_;
+
+		return *this;
 	}
 
 private:
@@ -104,14 +121,20 @@ public:
 		return this->minor_degree_();
 	}
 
+	/**
+	 *
+	 * @param s
+	 * @param t
+	 * @return
+	 */
 	Vector operator()(const Parameter& s, const Parameter& t) const {
 		std::vector<gkfloat> M;
-		basis_function(this->major_degree_(), this->S_.begin(), this->S_.end(),
-				s, std::inserter(M, M.begin()));
+		bspl::basis_function(this->major_degree_(), this->S_.begin(),
+				this->S_.end(), s, std::inserter(M, M.begin()));
 
 		std::vector<gkfloat> N;
-		basis_function(this->minor_degree_(), this->T_.begin(), this->T_.end(),
-				t, std::inserter(N, N.begin()));
+		bspl::basis_function(this->minor_degree_(), this->T_.begin(),
+				this->T_.end(), t, std::inserter(N, N.begin()));
 
 		Vector r;
 		for (std::size_t i = 0; i < M.size(); ++i) {
@@ -136,8 +159,8 @@ public:
 	}
 
 private:
-	knotvector<Parameter> S_; ///< The knot vector in major order.
-	knotvector<Parameter> T_; ///< The knot vector in minor order.
+	bspl::knotvector<Parameter> S_; ///< The knot vector in major order.
+	bspl::knotvector<Parameter> T_; ///< The knot vector in minor order.
 	network<Vector> Q_; ///< The control points.
 
 private:
