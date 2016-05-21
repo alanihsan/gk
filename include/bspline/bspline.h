@@ -24,6 +24,7 @@ namespace gk {
  * @brief B-spline (Basis spline).
  *
  * @tparam Vector Type of a control point.
+ * @tparam Parameter Type of a parameter.
  *
  * @author Takuya Makimoto
  * @date 2015
