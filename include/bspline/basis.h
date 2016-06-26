@@ -188,16 +188,14 @@ private:
 	container_type X_;
 };
 
-template<typename Parameter>
-size_t knot_segment(const knotvector<Parameter>& T, std::size_t degree,
-		const Parameter& t) {
-	const std::size_t order = degree + 1;
-	const std::size_t n = T.size() - order;
-
-	return std::distance(T.begin(),
-			std::upper_bound(T.begin() + order, T.begin() + n, t)) - 1;
-}
-
+/**
+ *
+ * @param degree
+ * @param first
+ * @param last
+ * @param t
+ * @return
+ */
 template<typename RandomAccessIterator, typename Parameter>
 RandomAccessIterator segment_of(size_t degree, RandomAccessIterator first,
 		RandomAccessIterator last, const Parameter& t) {
@@ -280,8 +278,8 @@ OutputRandomAccessIterator basis_function(size_t degree,
 				beta[j] = (denominator == Zero) ? Zero : One / denominator;
 			}
 
-			N[segment - k + 1] = -p * beta[segment - k + 2]
-					* N[segment - k + 2];
+			N[segment - k + 1] = -beta[segment - k + 2] * N[segment - k + 2];
+			N[segment - k + 1] *= p;
 			for (std::size_t j = segment - k + 2; j < segment; ++j) {
 				N[j] = p * (beta[j] * N[j] - beta[j + 1] * N[j + 1]);
 			}
