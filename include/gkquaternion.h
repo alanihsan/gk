@@ -11,6 +11,7 @@
 #include "gkdef.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace gk {
 

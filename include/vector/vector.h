@@ -8,7 +8,9 @@
 #ifndef INCLUDE_VECTOR_VECTOR_H_
 #define INCLUDE_VECTOR_VECTOR_H_
 
-#include "../gkdef.h"
+#include "../gkvector.h"
+#include <iterator>
+#include <algorithm>
 
 namespace gk {
 
@@ -231,6 +233,14 @@ struct vector_traits<vector<DimensionSize, T> > {
 
 	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
 	static const bool IsHomogeneous = false;
+
+	static const_iterator begin(const vector<DimensionSize, T>& v) {
+		return v.begin();
+	}
+
+	static iterator begin(vector<DimensionSize, T>& v) {
+		return v.begin();
+	}
 };
 
 template<typename CharT, typename Traits, size_t Dimension, typename T>

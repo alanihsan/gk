@@ -8,7 +8,7 @@
 #ifndef PRIMITIVE_TRIANGLE_H_
 #define PRIMITIVE_TRIANGLE_H_
 
-#include <gksurface.h>
+#include "../gkvector.h"
 
 namespace gk {
 
@@ -113,8 +113,10 @@ private:
  * @see inner::direction_of_triangle()
  */
 template<typename Vector>
-direction<Vector> direction_of(const triangle<Vector>& a) {
-	return cross<direction<Vector> >()(normalize(a.u()), normalize(a.v()));
+direction<vector_traits<Vector>::Dimension> direction_of(
+		const triangle<Vector>& a) {
+	return cross<direction<vector_traits<Vector>::Dimension> >()(
+			normalize(a.u()), normalize(a.v()));
 }
 
 namespace impl {
@@ -160,7 +162,7 @@ struct area {
 template<typename Vector, typename AreaValue>
 struct area<triangle<Vector>, AreaValue> {
 	AreaValue operator()(const triangle<Vector>& a) const {
-		const dot<Vector, Vector, AreaValue> dot;
+//		const dot<Vector, Vector, AreaValue> dot;
 		const AreaValue dot_u = dot(a.u(), a.u());
 		const AreaValue dot_v = dot(a.v(), a.v());
 		const AreaValue dot_uv = dot(a.u(), a.v());

@@ -169,25 +169,25 @@ typename vector_traits<Vector>::value_type norm(const Vector& v) {
 	return std::sqrt(dot(v, v));
 }
 
-namespace impl {
-
-template<typename Vector1, typename Vector2, typename Result>
-void cross_kernel(const Vector1&, const Vector2&, Result& r,
-		dimension_tag<GK::GK_2D>) {
-	typedef typename vector_traits<Result>::value_type value_type;
-	r[GK::X] = value_type(GK_FLOAT_ZERO);
-	r[GK::Y] = value_type(GK_FLOAT_ZERO);
-}
-
-template<typename Vector1, typename Vector2, typename Result>
-void cross_kernel(const Vector1& u, const Vector2& v, Result& r,
-		dimension_tag<GK::GK_3D>) {
-	r[GK::X] = u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y];
-	r[GK::Y] = u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z];
-	r[GK::Z] = u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X];
-}
-
-}
+//namespace impl {
+//
+//template<typename Vector1, typename Vector2, typename Result>
+//void cross_kernel(const Vector1&, const Vector2&, Result& r,
+//		dimension_tag<GK::GK_2D>) {
+//	typedef typename vector_traits<Result>::value_type value_type;
+//	r[GK::X] = value_type(GK_FLOAT_ZERO);
+//	r[GK::Y] = value_type(GK_FLOAT_ZERO);
+//}
+//
+//template<typename Vector1, typename Vector2, typename Result>
+//void cross_kernel(const Vector1& u, const Vector2& v, Result& r,
+//		dimension_tag<GK::GK_3D>) {
+//	r[GK::X] = u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y];
+//	r[GK::Y] = u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z];
+//	r[GK::Z] = u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X];
+//}
+//
+//}
 
 template<typename Vector1, typename Vector2 = Vector1, typename Result = Vector1>
 struct cross {

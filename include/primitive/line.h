@@ -10,6 +10,7 @@
 
 #include "../gkvector.h"
 #include "../gkcurve.h"
+#include "../gkaabb.h"
 
 #include <vector>
 
@@ -55,18 +56,19 @@ public:
 
 	}
 
-	line(const Vector& reference, const direction_type& direction) :
+	line(const vector_type& reference, const direction_type& direction) :
 			ref_(reference), direction_(direction) {
 
 	}
 
 	line(const vector_type& start, const vector_type& end) :
-			ref_(start), direction_(end - start) {
+			ref_(start), direction_(
+					vector_traits<vector_type>::begin(end - start)) {
 	}
 
-	line(const std::pair<vector_type, vector_type>& pair) :
-			ref_(pair.first), direction_(pair.second - pair.first) {
-	}
+//	line(const std::pair<vector_type, vector_type>& pair) :
+//			ref_(pair.first), direction_(pair.second - pair.first) {
+//	}
 
 	~line() {
 	}

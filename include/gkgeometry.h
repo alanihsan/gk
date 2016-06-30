@@ -91,7 +91,7 @@ struct geometry;
 #define GK_GEOMETRY_BASE_TEMPLATE_CLASS(Category) \
 	template<typename Vector> \
 	struct geometry<Category, Vector> { \
-		typedef Category category_type; \
+		typedef Category category; \
 		typedef Vector vector_type; \
 	};
 

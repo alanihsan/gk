@@ -158,17 +158,17 @@ private:
 	direction_type u_direction_() const {
 		if (this->normal_[GK::X]
 				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
-			return basis<Vector>()[GK::X];
+			return basis<Dimension>()[GK::X];
 		}
 
 		if (this->normal_[GK::Y]
 				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
-			return basis<Vector>()[GK::Y];
+			return basis<Dimension>()[GK::Y];
 		}
 
 		if (this->normal_[GK::Z]
 				== typename direction_type::value_type(GK_FLOAT_ZERO)) {
-			return basis<Vector>()[GK::Z];
+			return basis<Dimension>()[GK::Z];
 		}
 
 		vector_type u;
