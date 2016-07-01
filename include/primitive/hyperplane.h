@@ -70,7 +70,7 @@ public:
 	}
 
 	/**
-	 * @brief
+	 * @brief Assigns a rhs.
 	 *
 	 * @tparam T Type of line in 2D, type of plane in 3D.
 	 *
@@ -101,7 +101,21 @@ private:
 
 		return *this;
 	}
+
+	template<typename Plane>
+	hyperplane& assign_(const Plane& plane, plane_tag,
+			dimension_tag<GK::GK_3D>) {
+		this->reference_ = plane(GK_FLOAT_ZERO, GK_FLOAT_ZERO);
+		this->normal_ = direction_of(plane);
+		return *this;
+	}
 };
+
+template<typename Vector>
+direction<vector_traits<Vector>::Dimension> direction_of(
+		const hyperplane<Vector>& hplane) {
+	return hplane.normal();
+}
 
 }  // namespace gk
 
