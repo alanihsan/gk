@@ -1,12 +1,12 @@
 /*
- * surface.h
+ * bsurface.h
  *
  *  Created on: 2016/04/06
  *      Author: tmakimoto
  */
 
-#ifndef INCLUDE_BSPLINE_SURFACE_H_
-#define INCLUDE_BSPLINE_SURFACE_H_
+#ifndef INCLUDE_BSPLINE_BSURFACE_H_
+#define INCLUDE_BSPLINE_BSURFACE_H_
 
 #include "basis.h"
 
@@ -175,4 +175,4 @@ private:
 
 }  // namespace gk
 
-#endif /* INCLUDE_BSPLINE_SURFACE_H_ */
+#endif /* INCLUDE_BSPLINE_BSURFACE_H_ */

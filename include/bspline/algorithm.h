@@ -114,6 +114,8 @@ OutputIterator intersect_kernel(const bspline<Vector, Parameter>& a,
  * @param epsilon Tolerance.
  * @param result
  * @return Next position of last intersect element.
+ *
+ * @related bspline
  */
 template<typename Vector, typename Parameter1, typename Parameter2,
 		typename Tolerance, typename OutputIterator>
@@ -170,6 +172,16 @@ OutputIterator intersect(const bspline<Vector, Parameter1>& a,
 	return result;
 }
 
+/**
+ *
+ * @param a
+ * @param b
+ * @param epsilon
+ * @param result
+ * @return
+ *
+ * @related bspline
+ */
 template<typename Vector, typename Parameter, typename Other,
 		typename Tolerance, typename OutputIterator>
 OutputIterator intersect(const bspline<Vector, Parameter>& a, const Other& b,
@@ -178,6 +190,16 @@ OutputIterator intersect(const bspline<Vector, Parameter>& a, const Other& b,
 			typename geometry_traits<Other>::category());
 }
 
+/**
+ *
+ * @param a
+ * @param b
+ * @param epsilon
+ * @param result
+ * @return
+ *
+ * @related bspline
+ */
 template<typename Vector, typename Parameter, typename Other,
 		typename Tolerance, typename OutputIterator>
 OutputIterator intersect(const Other& a, const bspline<Vector, Parameter>& b,
