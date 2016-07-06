@@ -10,44 +10,42 @@
 
 namespace gk {
 
-template<typename Vector>
-class point/*: geometry<point_tag, Vector,
- typename vector_traits<Vector>::value_type>*/{
+/*template<typename Vector>*/
+template<std::size_t DimensionSize, typename T>
+class point {
 public:
-	typedef Vector vector_type;
-	typedef typename vector_traits<Vector>::value_type value_type;
-
-	static const size_t Dimension = vector_traits<Vector>::Dimension;
+//	typedef Vector vector_type;
+//	typedef typename vector_traits<Vector>::value_type value_type;
+	typedef T value_type;
+	static const size_t Dimension = DimensionSize; //vector_traits<Vector>::Dimension;
 
 public:
 	point() :
 			x_() {
-
 	}
 
 	point(const point& other) :
 			x_(other.x_) {
-
 	}
 
-	point(const vector_type& v) :
-			x_(v) {
-
+	template<typename Vector>
+	point(const Vector& v) :
+			x_() {
+		this->assign_(v);
 	}
 
 	~point() {
-
 	}
 
-	vector_type position() const {
-		return this->x_;
-	}
+//	vector_type position() const {
+//		return this->x_;
+//	}
 
-	const value_type& operator[](size_t n) const {
+	const T& operator[](std::size_t n) const {
 		return this->x_[n];
 	}
 
-	value_type& operator[](size_t n) {
+	T& operator[](size_t n) {
 		return this->x_[n];
 	}
 
@@ -60,8 +58,21 @@ public:
 		return *this;
 	}
 
+	template<typename Vector>
+	point& operator=(const Vector& v) {
+		this->assign_(v);
+	}
+
 private:
-	vector_type x_;
+	T x_[DimensionSize];
+
+private:
+	template<typename Vector>
+	void assign_(const Vector& v) {
+		for (std::size_t i = 0; i < DimensionSize; ++i) {
+			this->x_[i] = v[i];
+		}
+	}
 };
 
 }  // namespace gk

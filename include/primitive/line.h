@@ -58,7 +58,6 @@ public:
 
 	line(const vector_type& reference, const direction_type& direction) :
 			ref_(reference), direction_(direction) {
-
 	}
 
 	line(const vector_type& start, const vector_type& end) :
