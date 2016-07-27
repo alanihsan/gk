@@ -257,6 +257,26 @@ public:
 				std::bind2nd(multiplies<L_t, InvL_t>(), F));
 	}
 
+	template<typename Vector>
+	direction(const Vector& start, const Vector& end) :
+			x_() {
+
+		typedef vector_traits<Vector> vtraits;
+		typedef typename vtraits::value_type L_t;
+		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
+		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
+
+		Vector v = end - start;
+		typename vtraits::iterator first = vtraits::begin(v);
+		typename vtraits::iterator last = vtraits::end(v);
+		const L2_t L2 = std::inner_product(first, last, first,
+				L2_t(GK_FLOAT_ZERO));
+		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
+
+		std::transform(first, last, this->x_,
+				std::bind2nd(multiplies<L_t, InvL_t>(), F));
+	}
+
 	~direction() {
 	}
 
