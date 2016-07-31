@@ -109,6 +109,8 @@ struct GK {
 		GK_3D = 3 ///< 3 dimension.
 	} DimensionNumber;
 
+	static const std::size_t D3 = 3;
+
 	typedef enum {
 		GK_SinglePrecision = __SIZEOF_FLOAT__,
 		GK_DoublePrecision = __SIZEOF_DOUBLE__,
