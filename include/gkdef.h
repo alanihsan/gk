@@ -50,6 +50,17 @@
 //
 //typedef gkuint gksize;
 
+typedef bool gkselection;
+
+typedef bool gkminmax;
+const bool GK_Min = false;
+const bool GK_Max = true;
+
+#define GK_FLOAT_ZERO 0.0
+#define GK_FLOAT_ONE 1.0
+#define GK_FLOAT_NEGATIVE_ONE -1.0
+
+namespace gk {
 /*
  * Floating Value Type．
  */
@@ -65,20 +76,8 @@
 #	define GK_SIZEOF_FLOAT 8
 #		define GK_FLOAT_TYPE double
 #endif
-typedef GK_FLOAT_TYPE gkfloat;
+typedef GK_FLOAT_TYPE float_type;
 #undef GK_FLOAT_TYPE
-
-typedef bool gkselection;
-
-typedef bool gkminmax;
-const bool GK_Min = false;
-const bool GK_Max = true;
-
-#define GK_FLOAT_ZERO 0.0
-#define GK_FLOAT_ONE 1.0
-#define GK_FLOAT_NEGATIVE_ONE -1.0
-
-namespace gk {
 
 template<std::size_t N>
 struct number_tag {
@@ -88,6 +87,31 @@ struct number_tag {
 template<std::size_t Dimension>
 struct dimension_tag: public number_tag<Dimension> {
 	static const std::size_t Size = Dimension;
+};
+
+template<typename Scalar>
+struct scalar_traits {
+	static const std::size_t Precision = 0;
+};
+
+template<std::size_t Precision>
+struct float_traits {
+	typedef void value_type;
+};
+
+template<>
+struct float_traits<4> {
+	typedef float value_type;
+};
+
+template<>
+struct float_traits<8> {
+	typedef double value_type;
+};
+
+template<>
+struct float_traits<16> {
+	typedef long double value_type;
 };
 
 /**
