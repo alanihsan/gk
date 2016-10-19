@@ -21,8 +21,23 @@
 #include <iterator>
 #include <algorithm>
 #include <functional>
+#include <Eigen/Core>
 
 namespace gk {
+
+//template<std::size_t Dimension, typename T>
+//struct xvector;
+
+//#if __cplusplus >= 201103L
+//template<std::size_t Dimension, typename T>
+//using xvector=Eigen::Matrix<T,1,Dimension,Eigen::RowMajor>;
+//
+//#else
+template<std::size_t Dimension, typename T>
+struct xvector {
+	typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> type;
+};
+//#endif
 
 /**
  * @brief Traits of a vector.
@@ -76,52 +91,52 @@ struct vector_traits {
 	}
 };
 
-template<std::size_t DimensionSize, typename T>
-struct vector_traits<T[DimensionSize]> {
-	typedef T Vector[DimensionSize];
-	typedef T value_type;
-
-	static const std::size_t Dimension = DimensionSize;
-	static const bool IsHomogeneous = false;
-
-	typedef T* iterator;
-	typedef const T* const_iterator;
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const_iterator begin(const Vector& v) {
-		return v;
-	}
-
-	static iterator begin(Vector& v) {
-		return v;
-	}
-
-	static const_iterator end(const Vector& v) {
-		return v + DimensionSize;
-	}
-
-	static iterator end(Vector& v) {
-		return v + DimensionSize;
-	}
-
-	static const_reverse_iterator rbegin(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(end(v));
-	}
-
-	static reverse_iterator rbegin(Vector& v) {
-		return std::reverse_iterator<iterator>(end(v));
-	}
-
-	static const_reverse_iterator rend(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(begin(v));
-	}
-
-	static reverse_iterator rend(Vector& v) {
-		return std::reverse_iterator<iterator>(begin(v));
-	}
-};
-
+//template<std::size_t DimensionSize, typename T>
+//struct vector_traits<T[DimensionSize]> {
+//	typedef T Vector[DimensionSize];
+//	typedef T value_type;
+//
+//	static const std::size_t Dimension = DimensionSize;
+//	static const bool IsHomogeneous = false;
+//
+//	typedef T* iterator;
+//	typedef const T* const_iterator;
+//	typedef std::reverse_iterator<iterator> reverse_iterator;
+//	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+//
+//	static const_iterator begin(const Vector& v) {
+//		return v;
+//	}
+//
+//	static iterator begin(Vector& v) {
+//		return v;
+//	}
+//
+//	static const_iterator end(const Vector& v) {
+//		return v + DimensionSize;
+//	}
+//
+//	static iterator end(Vector& v) {
+//		return v + DimensionSize;
+//	}
+//
+//	static const_reverse_iterator rbegin(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(end(v));
+//	}
+//
+//	static reverse_iterator rbegin(Vector& v) {
+//		return std::reverse_iterator<iterator>(end(v));
+//	}
+//
+//	static const_reverse_iterator rend(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(begin(v));
+//	}
+//
+//	static reverse_iterator rend(Vector& v) {
+//		return std::reverse_iterator<iterator>(begin(v));
+//	}
+//};
+//
 template<typename Vector1, typename Vector2>
 typename multiplies_result<typename vector_traits<Vector1>::value_type,
 		typename vector_traits<Vector2>::value_type>::value_type dot(
@@ -210,15 +225,15 @@ struct cross {
  * @author Takuya Makimoto
  * @date 2016/01/25
  */
-template<std::size_t Dimension>
-class direction {
+template<std::size_t DimensionSize>
+class xdirection {
 public:
-	typedef float_type value_type;
+	typedef gkfloat value_type;
 	typedef const value_type* const_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-//	static const std::size_t Dimension = DimensionSize;
-//	static const std::size_t ElementSize = DimensionSize;
+	static const std::size_t Dimension = DimensionSize;
+	static const std::size_t ElementSize = DimensionSize;
 
 public:
 	/**
@@ -226,45 +241,40 @@ public:
 	 *
 	 * An instance made by this constructor is implemented a zero vector.
 	 */
-	direction() :
+	xdirection() :
 			x_() {
-		std::fill(this->x_, this->x_ + Dimension, value_type(GK_FLOAT_ZERO));
+		std::fill(this->x_, this->x_ + DimensionSize,
+				value_type(GK_FLOAT_ZERO));
 	}
 
 	/**
 	 * @brief Copy constructor.
 	 * @param other
 	 */
-	direction(const direction& other) :
+	xdirection(const xdirection& other) :
 			x_() {
 		std::copy(other.x_, other.x_ + ElementSize, this->x_);
 	}
 
-//	template<typename InputIterator>
-//	explicit direction(InputIterator first) :
-//			x_() {
-//		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
-//		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
-//		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
-//
-//		InputIterator last = first;
-//		std::advance(last, DimensionSize);
-//		const L2_t L2 = std::inner_product(first, last, first,
-//				L2_t(GK_FLOAT_ZERO));
-//		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
-//
-//		std::transform(first, last, this->x_,
-//				std::bind2nd(multiplies<L_t, InvL_t>(), F));
-//	}
-
-	template<typename Vector>
-	direction(const Vector& v) :
+	template<typename InputIterator>
+	explicit xdirection(InputIterator first) :
 			x_() {
+		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
+		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
+		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
 
+		InputIterator last = first;
+		std::advance(last, DimensionSize);
+		const L2_t L2 = std::inner_product(first, last, first,
+				L2_t(GK_FLOAT_ZERO));
+		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
+
+		std::transform(first, last, this->x_,
+				std::bind2nd(multiplies<L_t, InvL_t>(), F));
 	}
 
 	template<typename Vector>
-	direction(const Vector& start, const Vector& end) :
+	xdirection(const Vector& start, const Vector& end) :
 			x_() {
 
 		typedef vector_traits<Vector> vtraits;
@@ -283,7 +293,7 @@ public:
 				std::bind2nd(multiplies<L_t, InvL_t>(), F));
 	}
 
-	~direction() {
+	~xdirection() {
 	}
 
 	const_iterator begin() const {
@@ -310,7 +320,7 @@ public:
 		return this->x_[n];
 	}
 
-	direction& operator=(const direction& u) {
+	xdirection& operator=(const xdirection& u) {
 		if (&u == this) {
 			return *this;
 		}
@@ -319,76 +329,89 @@ public:
 		return *this;
 	}
 
+	xdirection& operator=(const xdirection<DimensionSize>& u) {
+		if (&u == this) {
+			return *this;
+		}
+
+		std::copy(u.data(), u.data() + ElementSize, this->x_);
+		return *this;
+	}
+
 private:
 	value_type x_[ElementSize];
 };
 
-/**
- * @brief
- *
- * @date 2016/03/07
- */
-template<size_t DimensionSize>
-struct vector_traits<direction<DimensionSize> > {
-	typedef typename direction<DimensionSize>::value_type value_type; ///< Type of elements in a vector.
+///**
+// * @brief
+// *
+// * @date 2016/03/07
+// */
+//template<size_t DimensionSize>
+//struct vector_traits<direction<DimensionSize> > {
+//	typedef typename direction<DimensionSize>::value_type value_type; ///< Type of elements in a vector.
+//
+//	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
+//	static const bool IsHomogeneous = false;
+//
+//	typedef typename direction<DimensionSize>::const_iterator iterator;
+//	typedef typename direction<DimensionSize>::const_iterator const_iterator;
+//	typedef typename direction<DimensionSize>::const_reverse_iterator reverse_iterator;
+//	typedef typename direction<DimensionSize>::const_reverse_iterator const_reverse_iterator;
+//
+//	static const_iterator begin(const direction<DimensionSize>& d) {
+//		return d.begin();
+//	}
+//
+//	static iterator begin(direction<DimensionSize>& d) {
+//		return d.begin();
+//	}
+//
+//	static const_iterator end(const direction<DimensionSize>& d) {
+//		return d.end();
+//	}
+//
+//	static iterator end(direction<DimensionSize>& d) {
+//		return d.end();
+//	}
+//
+//	static const_reverse_iterator rbegin(const direction<DimensionSize>& d) {
+//		return d.rbegin();
+//	}
+//
+//	static reverse_iterator rbegin(direction<DimensionSize>& d) {
+//		return d.rbegin();
+//	}
+//
+//	static const_reverse_iterator rend(const direction<DimensionSize>& d) {
+//		return d.rend();
+//	}
+//
+//	static reverse_iterator rend(direction<DimensionSize>& d) {
+//		return d.rend();
+//	}
+//};
 
-	static const size_t Dimension = DimensionSize; ///< A dimension size of a vector space.
-	static const bool IsHomogeneous = false;
-
-	typedef typename direction<DimensionSize>::const_iterator iterator;
-	typedef typename direction<DimensionSize>::const_iterator const_iterator;
-	typedef typename direction<DimensionSize>::const_reverse_iterator reverse_iterator;
-	typedef typename direction<DimensionSize>::const_reverse_iterator const_reverse_iterator;
-
-	static const_iterator begin(const direction<DimensionSize>& d) {
-		return d.begin();
-	}
-
-	static iterator begin(direction<DimensionSize>& d) {
-		return d.begin();
-	}
-
-	static const_iterator end(const direction<DimensionSize>& d) {
-		return d.end();
-	}
-
-	static iterator end(direction<DimensionSize>& d) {
-		return d.end();
-	}
-
-	static const_reverse_iterator rbegin(const direction<DimensionSize>& d) {
-		return d.rbegin();
-	}
-
-	static reverse_iterator rbegin(direction<DimensionSize>& d) {
-		return d.rbegin();
-	}
-
-	static const_reverse_iterator rend(const direction<DimensionSize>& d) {
-		return d.rend();
-	}
-
-	static reverse_iterator rend(direction<DimensionSize>& d) {
-		return d.rend();
-	}
-};
-
-template<size_t Dimension>
-bool operator==(const direction<Dimension>& u, const direction<Dimension>& v) {
+template<std::size_t Dimension, std::size_t Precision>
+bool operator==(const xdirection<Dimension, Precision>& u,
+		const xdirection<Dimension, Precision>& v) {
 	return std::equal(u.begin(), u.end(), v.begin());
 }
 
-template<size_t Dimension>
-bool operator!=(const direction<Dimension>& u, const direction<Dimension>& v) {
+template<std::size_t Dimension, std::size_t Precision>
+bool operator!=(const xdirection<Dimension, Precision>& u,
+		const xdirection<Dimension, Precision>& v) {
 	return !(u == v);
 }
 
-template<typename CharT, typename Traits, size_t Dimension>
+template<typename CharT, typename Traits, std::size_t Dimension,
+		std::size_t Precision>
 std::basic_ostream<CharT, Traits>& operator<<(
-		std::basic_ostream<CharT, Traits>& os, const direction<Dimension>& v) {
+		std::basic_ostream<CharT, Traits>& os,
+		const xdirection<Dimension, Precision>& v) {
 	const std::streamsize n = os.width();
-	for (typename direction<Dimension>::const_iterator p = v.begin();
-			p != v.end(); ++p) {
+	for (typename xdirection<Dimension, Precision>::const_iterator p =
+			v.begin(); p != v.end(); ++p) {
 		os.width(n);
 		os << *p;
 	}
@@ -403,9 +426,8 @@ std::basic_ostream<CharT, Traits>& operator<<(
  * @param a
  * @return
  */
-template<typename T>
-direction<geometry_traits<T>::Dimension> direction_of(const T& a);
-
+//template<typename T>
+//xdirection<geometry_traits<T>::Dimension> direction_of(const T& a);
 /**
  * @brief Computes a direction of a vector.
  *
@@ -416,12 +438,11 @@ direction<geometry_traits<T>::Dimension> direction_of(const T& a);
  * @param v The vector to be computed.
  * @return
  */
-template<typename Vector>
-direction<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
-	return direction<vector_traits<Vector>::Dimension>(
-			vector_traits<Vector>::begin(v));
-}
-
+//template<typename Vector>
+//xdirection<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
+//	return xdirection<vector_traits<Vector>::Dimension>(
+//			vector_traits<Vector>::begin(v));
+//}
 /**
  * @brief Computes a norm of a direction. This function always returns @b1
  * because a direction is a unit vector.
@@ -429,34 +450,33 @@ direction<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
  * @param
  * @return Returns the magnitude of the direction, 1.
  */
-template<size_t Dimension>
-typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
-	return typename direction<Dimension>::value_type(GK_FLOAT_ONE);
-}
-
-namespace impl {
-
-template<size_t Dimension, typename Vector>
-direction<Dimension> gk_normal_direction(const Vector&, const Vector&,
-		dimension_tag<Dimension>) {
-	return direction<Dimension>();
-}
-
-template<typename Vector>
-direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
-		dimension_tag<GK::GK_3D>) {
-	const typename vector_traits<Vector>::value_type Unit(GK_FLOAT_ONE);
-
-	Vector r;
-	r[GK::X] = (u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y]) / Unit;
-	r[GK::Y] = (u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z]) / Unit;
-	r[GK::Z] = (u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X]) / Unit;
-
-	return direction<GK::GK_3D>(r);
-}
-
-} // namespace inner
-
+//template<size_t Dimension>
+//typename xdirection<Dimension>::value_type norm(const xdirection<Dimension>&) {
+//	return typename xdirection<Dimension>::value_type(GK_FLOAT_ONE);
+//}
+//
+//namespace impl {
+//
+//template<size_t Dimension, typename Vector>
+//xdirection<Dimension> gk_normal_direction(const Vector&, const Vector&,
+//		dimension_tag<Dimension>) {
+//	return xdirection<Dimension>();
+//}
+//
+//template<typename Vector>
+//xdirection<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
+//		dimension_tag<GK::GK_3D>) {
+//	const typename vector_traits<Vector>::value_type Unit(GK_FLOAT_ONE);
+//
+//	Vector r;
+//	r[GK::X] = (u[GK::Y] * v[GK::Z] - u[GK::Z] * v[GK::Y]) / Unit;
+//	r[GK::Y] = (u[GK::Z] * v[GK::X] - u[GK::X] * v[GK::Z]) / Unit;
+//	r[GK::Z] = (u[GK::X] * v[GK::Y] - u[GK::Y] * v[GK::X]) / Unit;
+//
+//	return xdirection<GK::GK_3D>(r);
+//}
+//
+//} // namespace inner
 /**
  * @brief Computes a normal vector made by 2 vectors @a u and @a v
  * in a 3D space.
@@ -464,47 +484,45 @@ direction<GK::GK_3D> gk_normal_direction(const Vector& u, const Vector& v,
  * @param v The other vector.
  * @return The normal vector to have been computed.
  */
-template<typename Vector>
-direction<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
-		const Vector& v) {
-	return impl::gk_normal_direction(u, v,
-			dimension_tag<vector_traits<Vector>::Dimension>());
-}
-
+//template<typename Vector>
+//xdirection<vector_traits<Vector>::Dimension> normal_direction(const Vector& u,
+//		const Vector& v) {
+//	return impl::gk_normal_direction(u, v,
+//			dimension_tag<vector_traits<Vector>::Dimension>());
+//}
 /**
  * @brief Basis in a vector space.
  * @author Takuya Makimoto
  * @date 2015/12/09
  */
-template<size_t DimensionSize>
-class basis {
-public:
-	static const size_t Dimension = DimensionSize;
-	typedef direction<DimensionSize> direction_type;
-
-private:
-	static direction_type Value_(std::size_t n) {
-		gkfloat x[DimensionSize] = { gkfloat(GK_FLOAT_ZERO) };
-		x[n] = GK_FLOAT_ONE;
-		return direction_type(x);
-	}
-
-public:
-	basis() {
-	}
-
-	~basis() {
-	}
-
-	direction_type operator[](std::size_t n) const {
-		return Value_(n);
-	}
-
-private:
-	basis(const basis&);
-	basis& operator=(const basis&);
-};
-
+//template<size_t DimensionSize>
+//class basis {
+//public:
+//	static const size_t Dimension = DimensionSize;
+//	typedef xdirection<DimensionSize> direction_type;
+//
+//private:
+//	static direction_type Value_(std::size_t n) {
+//		gkfloat x[DimensionSize] = { gkfloat(GK_FLOAT_ZERO) };
+//		x[n] = GK_FLOAT_ONE;
+//		return direction_type(x);
+//	}
+//
+//public:
+//	basis() {
+//	}
+//
+//	~basis() {
+//	}
+//
+//	direction_type operator[](std::size_t n) const {
+//		return Value_(n);
+//	}
+//
+//private:
+//	basis(const basis&);
+//	basis& operator=(const basis&);
+//};
 /**
  * @brief
  * @tparam Vector
@@ -544,27 +562,27 @@ private:
 	}
 
 	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
-		const gkfloat theta = norm(this->angle);
-		const direction<GK::GK_3D> axis(this->angle);
-
-		const gkfloat sin = std::sin(0.5 * theta);
-		const gkfloat cos = std::cos(0.5 * theta);
-
-		const quaternion Q(sin * axis[quaternion::X], sin * axis[quaternion::Y],
-				sin * axis[quaternion::Z], cos);
-
-		const typename vector_traits<Vector>::value_type unit =
-				typename vector_traits<Vector>::value_type(GK_FLOAT_ONE);
-
-		const quaternion P(v / unit, quaternion::value_type(GK_FLOAT_ZERO));
-
-//		const quaternion R = conj(Q) * P * Q;
-		const quaternion R = Q * P * conj(Q);
+//		const gkfloat theta = norm(this->angle);
+//		const xdirection<GK::GK_3D> axis(this->angle);
+//
+//		const gkfloat sin = std::sin(0.5 * theta);
+//		const gkfloat cos = std::cos(0.5 * theta);
+//
+//		const quaternion Q(sin * axis[quaternion::X], sin * axis[quaternion::Y],
+//				sin * axis[quaternion::Z], cos);
+//
+//		const typename vector_traits<Vector>::value_type unit =
+//				typename vector_traits<Vector>::value_type(GK_FLOAT_ONE);
+//
+//		const quaternion P(v / unit, quaternion::value_type(GK_FLOAT_ZERO));
+//
+////		const quaternion R = conj(Q) * P * Q;
+//		const quaternion R = Q * P * conj(Q);
 
 		Vector r;
-		r[GK::X] = R[quaternion::X] * unit;
-		r[GK::Y] = R[quaternion::Y] * unit;
-		r[GK::Z] = R[quaternion::Z] * unit;
+//		r[GK::X] = R[quaternion::X] * unit;
+//		r[GK::Y] = R[quaternion::Y] * unit;
+//		r[GK::Z] = R[quaternion::Z] * unit;
 
 		return r;
 	}

@@ -12,121 +12,77 @@
 
 namespace gk {
 
-template<std::size_t Dimension, typename T>
-class vector {
+template<typename T, std::size_t DimensionSize>
+struct vector_type {
+	typedef Eigen::Matrix<T, 1, DimensionSize, Eigen::RowMajor> type;
+
+	typedef T value_type;
+	static const std::size_t Dimension = DimensionSize;
+};
+
+template<typename Vector>
+struct vector_traits {
+	typedef typename Vector::value_type value_type;
+	static const std::size_t Dimension = Vector::Dimension;
+};
+
+template<typename T, std::size_t Dimension>
+T norm(const typename vector<T, Dimension>::type& v);
+
+template<typename S, typename T, std::size_t Dimension>
+typename multiplies_result<S, T>::value_type dot(
+		const typename vector_type<S, Dimension>::type& u,
+		const typename vector_type<T, Dimension>::type& v);
+
+template<std::size_t Dimension>
+class xdirection {
+public:
+	typedef float_type value_type;
+	typedef typename vector_type<value_type, Dimension>::type vector_type;
+
 private:
-	Eigen::Matrix<1, Dimension, Eigen::RowMajor> type;
+	template<typename T>
+	static vector_type Normalized_(const vector_type& x) {
+
+	}
+
+	template<typename Vector>
+	static vector_type Normalized_(const Vector& v) {
+		typedef typename vector_traits<Vector>::value_type value_type;
+		const typename multiplies_result<value_type, value_type>::value_type L2 =
+				dot(v, v);
+
+		const value_type L = std::sqrt(L2);
+
+		return v / L;
+	}
 
 public:
-	vector() :
+	xdirection() :
 			x_() {
 	}
 
-	vector(const vector& other) :
+	xdirection(const xdirection& other) :
 			x_(other.x_) {
 	}
 
-	template<typename Element>
-	vector(const Element& v) :
+	template<typename T>
+	xdirection(const vector_type<T, Dimension>::type& v) :
 			x_() {
-		this->assign_(v, dimension_tag<Dimension>());
+		const typename multiplies_result<T, T>::value_type L2 = this->x_.dot(
+				this->x_);
+
+		const T L = std::sqrt(L2);
+
+		this->x_ = this->x_ / L;
 	}
 
-	~vector() {
-	}
-
-	const T& operator[](std::size_t n) const {
-		return this->x_[n];
-	}
-
-	T& operator[](std::size_t n) {
-		return this->x_[n];
-	}
-
-	vector& operator=(const vector& v) {
-		if (&v == this) {
-			return *this;
-		}
-
-		this->x_ = v.x_;
-		return *this;
-	}
-
-	template<typename Element>
-	vector& operator=(const Element& v) {
-		this->assign_(v, dimension_tag<Dimension>());
-	}
-
-	vector& operator+=(const vector& v) {
-		this->x_ += v.x_;
-		return *this;
-	}
-
-	vector& operator-=(const vector& v) {
-		this->x_ -= v.x_;
-		return *this;
-	}
-
-	template<typename Scalar>
-	vector& operator*=(const Scalar& alpha) {
-		this->x_ *= alpha;
-		return *this;
-	}
-
-	template<typename Scalar>
-	vector& operator/=(const Scalar& alpha) {
-		this->x_ /= alpha;
-		return *this;
+	~xdirection() {
 	}
 
 private:
-	type x_;
-
-private:
-	template<typename Element>
-	void assign_(const Element& v, dimension_tag<GK::GK_2D>) {
-		this->x_[GK::X] = v[GK::X];
-		this->x_[GK::Y] = v[GK::Y];
-	}
-
-	template<typename Element>
-	void assign_(const Element& v, dimension_tag<GK::GK_3D>) {
-		this->x_[GK::X] = v[GK::X];
-		this->x_[GK::X] = v[GK::X];
-		this->x_[GK::X] = v[GK::X];
-	}
+	vector_type x_;
 };
-
-template<std::size_t Dimension, typename T>
-vector<Dimension, T> operator+(const vector<Dimension, T>& u,
-		const vector<Dimension, T>& v) {
-	vector<Dimension, T> r = u;
-	r += v;
-	return r;
-}
-
-template<std::size_t Dimension, typename T>
-vector<Dimension, T> operator-(const vector<Dimension, T>& u,
-		const vector<Dimension, T>& v);
-
-template<std::size_t Dimension, typename T, typename Scalar>
-vector<Dimension, T> operator*(const Scalar& alpha,
-		const vector<Dimension, T>& v);
-
-template<std::size_t Dimension, typename T, typename Scalar>
-vector<Dimension, T> operator*(const vector<Dimension, T>& v,
-		const Scalar& alpha);
-
-template<std::size_t Dimension, typename T, typename Scalar>
-vector<Dimension, T> operator/(const vector<Dimension, T>& v,
-		const Scalar& alpha);
-
-template<std::size_t Dimension, typename T>
-T norm(const vector<Dimension, T>& v);
-
-template<std::size_t Dimension, typename S, typename T>
-typename multiplies_result<S, T>::value_type dot(const vector<Dimension, S>& u,
-		const vector<Dimension, T>& v);
 
 template<std::size_t RowSize, std::size_t ColumnSize, typename T>
 class matrix {
@@ -135,8 +91,8 @@ public:
 	matrix(const matrix& other);
 	~matrix();
 
-	vector operator()(std::size_t row) const;
-	void operator()(std::size_t row, const vector v);
+	vector_type operator()(std::size_t row) const;
+	void operator()(std::size_t row, const vector_type v);
 
 	const T& operator()(std::size_t row, std::size_t column) const;
 	T& operator()(std::size_t row, std::size_t column);

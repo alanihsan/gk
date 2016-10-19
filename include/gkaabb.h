@@ -197,6 +197,7 @@ aabb<Vector> make_boundary(const Vector& a, const Vector& b) {
 	return aabb<Vector>(a, b);
 }
 
+
 }  // namespace gk
 
 //template<GK_Dimension DimensionNumber>

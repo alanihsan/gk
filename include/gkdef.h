@@ -61,6 +61,9 @@ const bool GK_Max = true;
 #define GK_FLOAT_NEGATIVE_ONE -1.0
 
 namespace gk {
+
+typedef std::size_t size_t;
+
 /*
  * Floating Value Type．
  */

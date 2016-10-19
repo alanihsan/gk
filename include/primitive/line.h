@@ -31,13 +31,24 @@ namespace gk {
  * @author Takuya Makimoto
  * @date 2015/12/01
  */
-template<typename Vector>
+template<typename T, std::size_t Dimension = GK::GK_3D>
 class line: public geometry<line_tag, Vector> {
 public:
-	typedef Vector vector_type;
+	typedef T value_type;
 
-	static const size_t Dimension = vector_traits<Vector>::Dimension;
+//	static const size_t Dimension = vector_traits<Vector>::Dimension;
 	typedef direction<Dimension> direction_type;
+
+private:
+	template<typename Vector>
+	static vector_type reference_(const Vector& v, direction_tag<GK::GK_2D>) {
+		return vector_type(v[GK::X], v[GK::Y]);
+	}
+
+	template<typename Vector>
+	static vector_type reference_(const Vector& v, direction_tag<GK::GK_3D>) {
+		return vector_type(v[GK::X], v[GK::Y], v[GK::Z]);
+	}
 
 public:
 	/**
@@ -65,9 +76,19 @@ public:
 					vector_traits<vector_type>::begin(end - start)) {
 	}
 
+	template<typename Vector>
+	line(const Vector& reference, const direction_type& direction) :
+			ref_(line::reference_(v, dimension_tag<Dimension>())), direction_(
+					direction) {
+	}
+
 //	line(const std::pair<vector_type, vector_type>& pair) :
 //			ref_(pair.first), direction_(pair.second - pair.first) {
 //	}
+	template<typename Vector>
+	line(const Vector& start, const Vector& end) :
+			ref_(line::reference_(start, dimension_tag<Dimension>())), direction_() {
+	}
 
 	~line() {
 	}
@@ -84,7 +105,7 @@ public:
 	 *
 	 * @return
 	 */
-	const direction_type& tangent_direction() const {
+	const direction_type& direction() const {
 		return this->direction_;
 	}
 
@@ -92,7 +113,7 @@ public:
 	 *
 	 * @param d
 	 */
-	void tangent_direction(const direction_type& d) {
+	void direction(const direction_type& d) {
 		this->direction_ = d;
 	}
 
@@ -115,6 +136,7 @@ public:
 private:
 	vector_type ref_;
 	direction_type direction_;
+
 };
 
 //template<typename Vector, bool Upper = true>
@@ -279,7 +301,7 @@ aabb<Vector> boundary(const segment<Vector>& x) {
 }
 
 template<typename Vector>
-class polyline/*: public curve<curve_tag, Vector>*/{
+class xpolyline/*: public curve<curve_tag, Vector>*/{
 public:
 	typedef std::vector<Vector> container_type;
 	typedef Vector vector_type;
@@ -307,23 +329,23 @@ private:
 	}
 
 public:
-	polyline() :
+	xpolyline() :
 			X_() {
 
 	}
 
-	polyline(const polyline& other) :
+	xpolyline(const xpolyline& other) :
 			X_(other.X_) {
 
 	}
 
 	template<typename InputIterator>
 	polyline(InputIterator first, InputIterator last) :
-			X_(first, last) {
+	X_(first, last) {
 
 	}
 
-	~polyline() {
+	~xpolyline() {
 
 	}
 
@@ -364,7 +386,7 @@ public:
 	}
 
 	template<typename Parameter>
-	polyline subdivide(const Parameter& t, gkselection select = GK::Upper) {
+	xpolyline subdivide(const Parameter& t, gkselection select = GK::Upper) {
 
 	}
 
@@ -393,7 +415,7 @@ public:
 		return (Parameter(GK_FLOAT_ONE) - u) * this->X_[n - 1] + u * this->X_[n];
 	}
 
-	polyline& operator=(const polyline& rhs) {
+	xpolyline& operator=(const xpolyline& rhs) {
 		if (&rhs == this) {
 			return *this;
 		}
