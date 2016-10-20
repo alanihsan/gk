@@ -85,14 +85,12 @@ struct plane_tag: public surface_tag, public direction_tag {
 struct sphere_tag: public surface_tag {
 };
 
-template<typename Category, typename Vector>
+template<typename Category>
 struct geometry;
 
 #define GK_GEOMETRY_BASE_TEMPLATE_CLASS(Category) \
-	template<typename Vector> \
-	struct geometry<Category, Vector> { \
+	struct geometry<Category> { \
 		typedef Category category; \
-		typedef Vector vector_type; \
 	};
 
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(direction_tag)
@@ -114,7 +112,6 @@ GK_GEOMETRY_BASE_TEMPLATE_CLASS(sphere_tag)
 template<typename Geometry>
 struct geometry_traits {
 	typedef typename Geometry::category category;
-	typedef typename Geometry::vector_type vector_type;
 	static const size_t Dimension = Geometry::Dimension;
 };
 

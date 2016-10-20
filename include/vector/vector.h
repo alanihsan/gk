@@ -26,8 +26,14 @@ struct vector_traits {
 	static const std::size_t Dimension = Vector::Dimension;
 };
 
+template<typename T, std::size_t DimensionSize>
+struct vector_traits<typename vector_type<T, DimensionSize>::type> {
+	typedef T value_type;
+	static const std::size_t Dimension = DimensionSize;
+};
+
 template<typename T, std::size_t Dimension>
-T norm(const typename vector<T, Dimension>::type& v);
+T norm(const typename vector_type<T, Dimension>::type& v);
 
 template<typename S, typename T, std::size_t Dimension>
 typename multiplies_result<S, T>::value_type dot(
@@ -35,7 +41,7 @@ typename multiplies_result<S, T>::value_type dot(
 		const typename vector_type<T, Dimension>::type& v);
 
 template<std::size_t Dimension>
-class xdirection {
+class direction {
 public:
 	typedef float_type value_type;
 	typedef typename vector_type<value_type, Dimension>::type vector_type;
@@ -58,16 +64,16 @@ private:
 	}
 
 public:
-	xdirection() :
+	direction() :
 			x_() {
 	}
 
-	xdirection(const xdirection& other) :
+	direction(const direction& other) :
 			x_(other.x_) {
 	}
 
 	template<typename T>
-	xdirection(const vector_type<T, Dimension>::type& v) :
+	direction(const typename vector_type<T, Dimension>::type& v) :
 			x_() {
 		const typename multiplies_result<T, T>::value_type L2 = this->x_.dot(
 				this->x_);
@@ -77,7 +83,7 @@ public:
 		this->x_ = this->x_ / L;
 	}
 
-	~xdirection() {
+	~direction() {
 	}
 
 private:
