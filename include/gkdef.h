@@ -20,7 +20,7 @@
 #include "config/gkconfig.h"
 
 ///*
-// * Integer Value Type．
+// * Integer Value Type�ｼ�
 // */
 //#ifdef GK_SIZEOF_INT
 //#	if GK_SIZEOF_INT == __SIZEOF_INT__
@@ -65,7 +65,7 @@ namespace gk {
 typedef std::size_t size_t;
 
 /*
- * Floating Value Type．
+ * Floating Value Type�ｼ�
  */
 #ifdef GK_SIZEOF_FLOAT
 #	if GK_SIZEOF_FLOAT == __SIZEOF_FLOAT__
@@ -122,9 +122,6 @@ struct float_traits<16> {
  */
 struct GK {
 
-//#ifdef GK_EIGEN_ENABLED
-//	static const gksize DynamicSize = static_cast<gksize>(Eigen::Dynamic);
-//#endif
 
 	/**
 	 * @brief Enum about space dimensions.

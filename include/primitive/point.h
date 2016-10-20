@@ -10,14 +10,17 @@
 
 namespace gk {
 
-/*template<typename Vector>*/
-template<std::size_t DimensionSize, typename T>
+/**
+ * @brief
+ *
+ * @author Takuya Makiomto
+ * @date 2016/10/20
+ */
+template<typename T, std::size_t DimensionSize>
 class point {
 public:
-//	typedef Vector vector_type;
-//	typedef typename vector_traits<Vector>::value_type value_type;
 	typedef T value_type;
-	static const size_t Dimension = DimensionSize; //vector_traits<Vector>::Dimension;
+	static const std::size_t Dimension = DimensionSize;
 
 public:
 	point() :
@@ -37,15 +40,11 @@ public:
 	~point() {
 	}
 
-//	vector_type position() const {
-//		return this->x_;
-//	}
-
 	const T& operator[](std::size_t n) const {
 		return this->x_[n];
 	}
 
-	T& operator[](size_t n) {
+	T& operator[](std::size_t n) {
 		return this->x_[n];
 	}
 
@@ -64,7 +63,7 @@ public:
 	}
 
 private:
-	T x_[DimensionSize];
+	vector_type<T, DimensionSize>::type x_;
 
 private:
 	template<typename Vector>
