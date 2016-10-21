@@ -72,9 +72,10 @@ public:
 			x_(other.x_) {
 	}
 
+	<<<<<<< HEAD
 	template<typename Vector>
 	direction(const Vector& v) :
-			x_() {
+	x_() {
 		typedef typename vector_traits<Vector>::value_type T;
 		const typename multiplies_result<T, T>::value_type L2 = this->x_.dot(
 				this->x_);
@@ -126,9 +127,5 @@ typename vector_type<T, Dimension>::type operator*(
 }
 
 }  // namespace gk
-
-/*
- * Implements
- */
 
 #endif /* INCLUDE_VECTOR_ALGEBRA_H_ */
