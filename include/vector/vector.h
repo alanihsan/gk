@@ -54,11 +54,10 @@ private:
 
 	template<typename Vector>
 	static vector_type Normalized_(const Vector& v) {
-		typedef typename vector_traits<Vector>::value_type value_type;
-		const typename multiplies_result<value_type, value_type>::value_type L2 =
-				dot(v, v);
+		typedef typename vector_traits<Vector>::value_type T;
+		const typename multiplies_result<T, T>::value_type L2 = dot(v, v);
 
-		const value_type L = std::sqrt(L2);
+		const T L = std::sqrt(L2);
 
 		return v / L;
 	}
@@ -72,17 +71,9 @@ public:
 			x_(other.x_) {
 	}
 
-	<<<<<<< HEAD
 	template<typename Vector>
 	direction(const Vector& v) :
-	x_() {
-		typedef typename vector_traits<Vector>::value_type T;
-		const typename multiplies_result<T, T>::value_type L2 = this->x_.dot(
-				this->x_);
-
-		const T L = std::sqrt(L2);
-
-		this->x_ = this->x_ / L;
+			x_(Normalized_(v)) {
 	}
 
 	~direction() {
