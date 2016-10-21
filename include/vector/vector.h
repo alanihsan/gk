@@ -32,6 +32,29 @@ struct vector_traits<typename vector_type<T, DimensionSize>::type> {
 	static const std::size_t Dimension = DimensionSize;
 };
 
+template<typename Vector, typename T, std::size_t Dimension>
+void assign(const Vector& src,
+		const typename vector_type<T, Dimension>::type& dst) {
+	assign_dimension(src, dst, dimension_tag<Dimension>());
+}
+
+template<typename Vector, typename T>
+void assign_dimension(const Vector& src,
+		const typename vector_type<T, GK::GK_2D>::type& dst,
+		dimension_tag<GK::GK_2D>) {
+	dst[GK::X] = src[GK::X];
+	dst[GK::Y] = src[GK::Y];
+}
+
+template<typename Vector, typename T>
+void assign_dimension(const Vector& src,
+		const typename vector_type<T, GK::GK_3D>::type& dst,
+		dimension_tag<GK::GK_3D>) {
+	dst[GK::X] = src[GK::X];
+	dst[GK::Y] = src[GK::Y];
+	dst[GK::Z] = src[GK::Z];
+}
+
 template<typename T, std::size_t Dimension>
 T norm(const typename vector_type<T, Dimension>::type& v);
 
@@ -54,11 +77,10 @@ private:
 
 	template<typename Vector>
 	static vector_type Normalized_(const Vector& v) {
-		typedef typename vector_traits<Vector>::value_type value_type;
-		const typename multiplies_result<value_type, value_type>::value_type L2 =
-				dot(v, v);
+		typedef typename vector_traits<Vector>::value_type T;
+		const typename multiplies_result<T, T>::value_type L2 = dot(v, v);
 
-		const value_type L = std::sqrt(L2);
+		const T L = std::sqrt(L2);
 
 		return v / L;
 	}
@@ -72,17 +94,9 @@ public:
 			x_(other.x_) {
 	}
 
-	<<<<<<< HEAD
 	template<typename Vector>
 	direction(const Vector& v) :
-	x_() {
-		typedef typename vector_traits<Vector>::value_type T;
-		const typename multiplies_result<T, T>::value_type L2 = this->x_.dot(
-				this->x_);
-
-		const T L = std::sqrt(L2);
-
-		this->x_ = this->x_ / L;
+			x_(Normalized_(v)) {
 	}
 
 	~direction() {
