@@ -9,6 +9,7 @@
 #define GKGEOMETRY_H_
 
 #include "gkdef.h"
+#include <Eigen/Core>
 
 /**
  * @defgroup geometry_tags Geometry Tags
@@ -85,15 +86,16 @@ struct plane_tag: public surface_tag, public direction_tag {
 struct sphere_tag: public surface_tag {
 };
 
-template<typename Category, typename Vector>
+template<typename Category, typename T, std::size_t Dimension>
 struct geometry;
 
 #define GK_GEOMETRY_BASE_TEMPLATE_CLASS(Category) \
-	template<typename Vector> \
-	struct geometry<Category, Vector> { \
+	template<typename T, std::size_t Dimension> \
+	struct geometry<Category, T, Dimension> { \
 		typedef Category category; \
-		typedef Vector vector_type; \
-	};
+		typedef T value_type; \
+		typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> vector_type; \
+};
 
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(direction_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(line_tag)

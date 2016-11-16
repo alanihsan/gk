@@ -24,6 +24,11 @@
 
 namespace gk {
 
+template<typename T, std::size_t Dimension>
+struct vector_dependence {
+	typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> vector_type;
+};
+
 /**
  * @brief Traits of a vector.
  * @tparam Vector The type of the vector in a vector space.
@@ -237,7 +242,7 @@ public:
 	 */
 	direction(const direction& other) :
 			x_() {
-		std::copy(other.x_, other.x_ + ElementSize, this->x_);
+		std::copy(other.x_, other.x_ + Dimension, this->x_);
 	}
 
 //	template<typename InputIterator>
@@ -270,14 +275,14 @@ public:
 		typedef vector_traits<Vector> vtraits;
 		typedef typename vtraits::value_type L_t;
 		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
-		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
+		typedef typename divides_result<value_type, L_t>::value_type InvL_t;
 
 		Vector v = end - start;
 		typename vtraits::iterator first = vtraits::begin(v);
 		typename vtraits::iterator last = vtraits::end(v);
 		const L2_t L2 = std::inner_product(first, last, first,
 				L2_t(GK_FLOAT_ZERO));
-		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
+		const InvL_t F = value_type(GK_FLOAT_ONE) / std::sqrt(L2);
 
 		std::transform(first, last, this->x_,
 				std::bind2nd(multiplies<L_t, InvL_t>(), F));
@@ -315,12 +320,12 @@ public:
 			return *this;
 		}
 
-		std::copy(u.x_, u.x_ + ElementSize, this->x_);
+		std::copy(u.x_, u.x_ + Dimension, this->x_);
 		return *this;
 	}
 
 private:
-	value_type x_[ElementSize];
+	value_type x_[Dimension];
 };
 
 /**
@@ -484,7 +489,7 @@ public:
 
 private:
 	static direction_type Value_(std::size_t n) {
-		gkfloat x[DimensionSize] = { gkfloat(GK_FLOAT_ZERO) };
+		float_type x[DimensionSize] = { float_type(GK_FLOAT_ZERO) };
 		x[n] = GK_FLOAT_ONE;
 		return direction_type(x);
 	}
@@ -534,8 +539,8 @@ struct rotate {
 
 private:
 	Vector rotate_(const Vector& v, dimension_tag<GK::GK_2D>) const {
-		const gkfloat sin = std::sin(this->angle);
-		const gkfloat cos = std::cos(this->angle);
+		const float_type sin = std::sin(this->angle);
+		const float_type cos = std::cos(this->angle);
 
 		Vector r;
 		r[GK::X] = v[GK::X] * cos - v[GK::Y] * sin;
@@ -544,11 +549,11 @@ private:
 	}
 
 	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
-		const gkfloat theta = norm(this->angle);
+		const float_type theta = norm(this->angle);
 		const direction<GK::GK_3D> axis(this->angle);
 
-		const gkfloat sin = std::sin(0.5 * theta);
-		const gkfloat cos = std::cos(0.5 * theta);
+		const float_type sin = std::sin(0.5 * theta);
+		const float_type cos = std::cos(0.5 * theta);
 
 		const quaternion Q(sin * axis[quaternion::X], sin * axis[quaternion::Y],
 				sin * axis[quaternion::Z], cos);

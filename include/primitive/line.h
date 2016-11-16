@@ -32,9 +32,9 @@ namespace gk {
  * @date 2015/12/01
  */
 template<typename T, std::size_t Dimension = GK::GK_3D>
-class line: public geometry<line_tag, Vector> {
+class line: public geometry<line_tag, T, Dimension> {
 public:
-	typedef T value_type;
+//	typedef T value_type;
 
 //	static const size_t Dimension = vector_traits<Vector>::Dimension;
 	typedef direction<Dimension> direction_type;
