@@ -86,6 +86,7 @@ struct plane_tag: public surface_tag, public direction_tag {
 struct sphere_tag: public surface_tag {
 };
 
+<<<<<<< HEAD
 template<typename Category, typename T, std::size_t Dimension>
 struct geometry;
 
@@ -96,6 +97,15 @@ struct geometry;
 		typedef T value_type; \
 		typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> vector_type; \
 };
+=======
+template<typename Category>
+struct geometry;
+
+#define GK_GEOMETRY_BASE_TEMPLATE_CLASS(Category) \
+	struct geometry<Category> { \
+		typedef Category category; \
+	};
+>>>>>>> 5ed5cf2db97b02bd867d82a1513c790b646cb925
 
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(direction_tag)
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(line_tag)
@@ -116,7 +126,6 @@ GK_GEOMETRY_BASE_TEMPLATE_CLASS(sphere_tag)
 template<typename Geometry>
 struct geometry_traits {
 	typedef typename Geometry::category category;
-	typedef typename Geometry::vector_type vector_type;
 	static const size_t Dimension = Geometry::Dimension;
 };
 

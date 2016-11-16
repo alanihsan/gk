@@ -32,21 +32,25 @@ namespace gk {
  * @date 2015/12/01
  */
 template<typename T, std::size_t Dimension = GK::GK_3D>
+<<<<<<< HEAD
 class line: public geometry<line_tag, T, Dimension> {
+=======
+class line: public geometry<line_tag> {
+>>>>>>> 5ed5cf2db97b02bd867d82a1513c790b646cb925
 public:
 //	typedef T value_type;
 
-//	static const size_t Dimension = vector_traits<Vector>::Dimension;
+	typedef typename vector_type<T, Dimension>::type vector_type;
 	typedef direction<Dimension> direction_type;
 
 private:
 	template<typename Vector>
-	static vector_type reference_(const Vector& v, direction_tag<GK::GK_2D>) {
+	static vector_type Reference_(const Vector& v, direction_tag<GK::GK_2D>) {
 		return vector_type(v[GK::X], v[GK::Y]);
 	}
 
 	template<typename Vector>
-	static vector_type reference_(const Vector& v, direction_tag<GK::GK_3D>) {
+	static vector_type Reference_(const Vector& v, direction_tag<GK::GK_3D>) {
 		return vector_type(v[GK::X], v[GK::Y], v[GK::Z]);
 	}
 
@@ -78,16 +82,13 @@ public:
 
 	template<typename Vector>
 	line(const Vector& reference, const direction_type& direction) :
-			ref_(line::reference_(v, dimension_tag<Dimension>())), direction_(
+			ref_(line::Reference_(reference, dimension_tag<Dimension>())), direction_(
 					direction) {
 	}
 
-//	line(const std::pair<vector_type, vector_type>& pair) :
-//			ref_(pair.first), direction_(pair.second - pair.first) {
-//	}
 	template<typename Vector>
 	line(const Vector& start, const Vector& end) :
-			ref_(line::reference_(start, dimension_tag<Dimension>())), direction_() {
+			ref_(line::Reference_(start, dimension_tag<Dimension>())), direction_() {
 	}
 
 	~line() {
@@ -97,12 +98,17 @@ public:
 		return this->ref_;
 	}
 
-	vector_type& reference() {
-		return this->ref_;
+	void reference(const vector_type& r) {
+		this->ref_ = r;
+	}
+
+	template<typename Vector>
+	void reference(const Vector& r) {
+		this->ref_ = r;
 	}
 
 	/**
-	 *
+	 * @brief Returns the direction.
 	 * @return
 	 */
 	const direction_type& direction() const {
@@ -110,7 +116,7 @@ public:
 	}
 
 	/**
-	 *
+	 * @brief Sets a direction.
 	 * @param d
 	 */
 	void direction(const direction_type& d) {
@@ -139,31 +145,6 @@ private:
 
 };
 
-//template<typename Vector, bool Upper = true>
-//class ray: public curve<Vector, ray_tag,
-//		typename vector_traits<Vector>::value_type> {
-//public:
-//	ray() :
-//			ref_(), delta_() {
-//	}
-//
-//	ray(const ray& other) :
-//			ref_(other.ref_), delta_(other.delta_) {
-//	}
-//
-//	~ray() {
-//	}
-//
-//	vector_type operator()(const parameter& t) const {
-//		const typename norm_result<vector_type>::value_type L = norm(this->delta_);
-//		return this->ref_ + t * this->delta_ / L;
-//	}
-//
-//private:
-//	vector_type ref_;
-//	vector_type delta_;
-//};
-//
 /**
  * @brief Segment.
  *  @f[
@@ -178,12 +159,11 @@ private:
  * @author Takuya Makimoto
  * @date 2015/12/01
  */
-template<typename Vector>
-class segment: geometry<segment_tag, Vector> {
+template<typename T, std::size_t Dimension>
+class segment: geometry<segment_tag> {
 public:
-	typedef Vector vector_type;
-	typedef typename vector_traits<Vector>::value_type value_type;
-
+	typedef T value_type;
+	typedef typename vector_type<T, Dimension>::type vector_type;
 public:
 	segment() :
 			edge_() {
@@ -201,10 +181,11 @@ public:
 		this->edge_[GK::EndEdge] = end;
 	}
 
-	segment(const std::pair<vector_type, vector_type>& pair) :
+	template<typename Vector>
+	segment(const Vector& start, const Vector& end) :
 			edge_() {
-		this->edge_[GK::StartEdge] = pair.first;
-		this->edge_[GK::EndEdge] = pair.second;
+		assign(start, this->edge_[GK::StartEdge]);
+		assign(end, this->edge_[GK::EndEdge]);
 	}
 
 	~segment() {
@@ -230,11 +211,11 @@ public:
 		this->edge_[GK::EndEdge] = end;
 	}
 
-	const vector_type& operator[](size_t index) const {
+	const vector_type& operator[](std::size_t index) const {
 		return this->edge_[index];
 	}
 
-	vector_type& operator[](size_t index) {
+	vector_type& operator[](std::size_t index) {
 		return this->edge_[index];
 	}
 
@@ -260,39 +241,27 @@ private:
 	vector_type edge_[GK::EdgeSize];
 };
 
-//template<typename Vector>
-//struct curve_traits<segment<Vector> > {
-//	typedef typename geometry_traits<segment<Vector> >::parameter parameter;
-//	typedef aabb<Vector> boundary_type;
-//
-//	static std::pair<parameter, parameter> domain(const segment<Vector>&) {
-//		return std::make_pair(parameter(GK_FLOAT_ZERO), parameter(GK_FLOAT_ONE));
-//	}
-//
-//};
-
-template<typename Vector>
-direction<vector_traits<Vector>::Dimension> direction_of(
-		const line<Vector>& l) {
-	return l.tangent_direction();
+template<typename T, std::size_t Dimension>
+direction<Dimension> direction_of(const line<T, Dimension>& l) {
+	return l.direction();
 }
 
-template<typename Vector>
-direction<vector_traits<Vector>::Dimension> direction_of(
-		const segment<Vector>& l) {
-	return direction_of(l[GK::EndEdge] - l[GK::StartEdge]);
+template<typename T, std::size_t Dimension>
+direction<Dimension> direction_of(const segment<T, Dimension>& l) {
+	const typename vector_type<T, Dimension>::type v = l[GK::EndEdge]
+			- l[GK::StartEdge];
+	return direction_of(v);
 }
 
-template<typename Vector>
-typename vector_traits<Vector>::value_type length(const segment<Vector>& x) {
-	return norm(x.start() - x.end());
+template<typename T, std::size_t Dimension>
+T length(const segment<T, Dimension>& l) {
+	const typename vector_type<T, Dimension>::type v = l.start() - l.end();
+	return norm(v);
 }
 
-template<typename Vector>
-std::pair<typename segment<Vector>::parameter,
-		typename segment<Vector>::parameter> domain(const segment<Vector>&) {
-	typedef typename segment<Vector>::parameter parameter;
-	return std::make_pair(parameter(GK_FLOAT_ZERO), parameter(GK_FLOAT_ONE));
+template<typename T, std::size_t Dimension>
+std::pair<T, T> domain(const segment<T, Dimension>&) {
+	return std::make_pair(T(GK_FLOAT_ZERO), T(GK_FLOAT_ONE));
 }
 
 template<typename Vector>

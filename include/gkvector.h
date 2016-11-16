@@ -209,6 +209,7 @@ struct cross {
 	}
 };
 
+<<<<<<< HEAD
 /**
  * @brief Direction.
  *
@@ -247,20 +248,87 @@ public:
 
 //	template<typename InputIterator>
 //	explicit direction(InputIterator first) :
-//			x_() {
-//		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
-//		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
-//		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
+=======
+///**
+// * @brief Direction.
+// *
+// * @author Takuya Makimoto
+// * @date 2016/01/25
+// */
+//template<std::size_t Dimension>
+//class direction {
+//public:
+//	typedef float_type value_type;
+//	typedef const value_type* const_iterator;
+//	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 //
-//		InputIterator last = first;
-//		std::advance(last, DimensionSize);
+////	static const std::size_t Dimension = DimensionSize;
+////	static const std::size_t ElementSize = DimensionSize;
+//
+//public:
+//	/**
+//	 * @brief Default constructor.
+//	 *
+//	 * An instance made by this constructor is implemented a zero vector.
+//	 */
+//	direction() :
+//			x_() {
+//		std::fill(this->x_, this->x_ + Dimension, value_type(GK_FLOAT_ZERO));
+//	}
+//
+//	/**
+//	 * @brief Copy constructor.
+//	 * @param other
+//	 */
+//	direction(const direction& other) :
+//			x_() {
+//		std::copy(other.x_, other.x_ + ElementSize, this->x_);
+//	}
+//
+////	template<typename InputIterator>
+////	explicit direction(InputIterator first) :
+////			x_() {
+////		typedef typename std::iterator_traits<InputIterator>::value_type L_t;
+////		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
+////		typedef typename divides_result<gkfloat, L_t>::value_type InvL_t;
+////
+////		InputIterator last = first;
+////		std::advance(last, DimensionSize);
+////		const L2_t L2 = std::inner_product(first, last, first,
+////				L2_t(GK_FLOAT_ZERO));
+////		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
+////
+////		std::transform(first, last, this->x_,
+////				std::bind2nd(multiplies<L_t, InvL_t>(), F));
+////	}
+//
+//	template<typename Vector>
+//	direction(const Vector& v) :
+//			x_() {
+//
+//	}
+//
+//	template<typename Vector>
+//	direction(const Vector& start, const Vector& end) :
+>>>>>>> 5ed5cf2db97b02bd867d82a1513c790b646cb925
+//			x_() {
+//
+//		typedef vector_traits<Vector> vtraits;
+//		typedef typename vtraits::value_type L_t;
+//		typedef typename multiplies_result<L_t, L_t>::value_type L2_t;
+//		typedef typename divides_result<float_type, L_t>::value_type InvL_t;
+//
+//		Vector v = end - start;
+//		typename vtraits::iterator first = vtraits::begin(v);
+//		typename vtraits::iterator last = vtraits::end(v);
 //		const L2_t L2 = std::inner_product(first, last, first,
 //				L2_t(GK_FLOAT_ZERO));
-//		const InvL_t F = gkfloat(GK_FLOAT_ONE) / std::sqrt(L2);
+//		const InvL_t F = float_type(GK_FLOAT_ONE) / std::sqrt(L2);
 //
 //		std::transform(first, last, this->x_,
 //				std::bind2nd(multiplies<L_t, InvL_t>(), F));
 //	}
+<<<<<<< HEAD
 
 	template<typename Vector>
 	direction(const Vector& v) :
@@ -327,6 +395,48 @@ public:
 private:
 	value_type x_[Dimension];
 };
+=======
+//
+//	~direction() {
+//	}
+//
+//	const_iterator begin() const {
+//		return this->x_;
+//	}
+//
+//	const_iterator end() const {
+//		return this->x_ + Dimension;
+//	}
+//
+//	const_reverse_iterator rbegin() const {
+//		return std::reverse_iterator<const_iterator>(this->end());
+//	}
+//
+//	const_reverse_iterator rend() const {
+//		return std::reverse_iterator<const_iterator>(this->begin());
+//	}
+//
+//	const value_type* data() const {
+//		return this->x_;
+//	}
+//
+//	value_type operator[](const size_t n) const {
+//		return this->x_[n];
+//	}
+//
+//	direction& operator=(const direction& u) {
+//		if (&u == this) {
+//			return *this;
+//		}
+//
+//		std::copy(u.x_, u.x_ + ElementSize, this->x_);
+//		return *this;
+//	}
+//
+//private:
+//	value_type x_[ElementSize];
+//};
+>>>>>>> 5ed5cf2db97b02bd867d82a1513c790b646cb925
 
 /**
  * @brief
