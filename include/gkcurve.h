@@ -12,13 +12,13 @@
 
 namespace gk {
 
-template<typename Vector>
-struct line_type: public geometry<line_tag, Vector> {
-};
-
-template<typename Vector>
-struct free_curve_type:public geometry<free_curve_tag,Vector>{
-};
+//template<typename Vector>
+//struct line_type: public geometry<line_tag, Vector> {
+//};
+//
+//template<typename Vector>
+//struct free_curve_type:public geometry<free_curve_tag,Vector>{
+//};
 
 } // namespace gk
 

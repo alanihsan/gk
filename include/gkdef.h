@@ -65,7 +65,7 @@ namespace gk {
 typedef std::size_t size_t;
 
 /*
- * Floating Value Type�ｼ�
+ * Floating Value Type
  */
 #ifdef GK_SIZEOF_FLOAT
 #	if GK_SIZEOF_FLOAT == __SIZEOF_FLOAT__
@@ -122,7 +122,6 @@ struct float_traits<16> {
  */
 struct GK {
 
-
 	/**
 	 * @brief Enum about space dimensions.
 	 */
@@ -133,7 +132,8 @@ struct GK {
 		GK_3D = 3 ///< 3 dimension.
 	} DimensionNumber;
 
-	static const std::size_t D3 = 3;
+	static const std::size_t Dimension2 = 2;
+	static const std::size_t Dimension3 = 3;
 
 	typedef enum {
 		GK_SinglePrecision = __SIZEOF_FLOAT__,

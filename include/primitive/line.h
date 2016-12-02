@@ -32,25 +32,22 @@ namespace gk {
  * @date 2015/12/01
  */
 template<typename T, std::size_t Dimension = GK::GK_3D>
-<<<<<<< HEAD
 class line: public geometry<line_tag, T, Dimension> {
-=======
-class line: public geometry<line_tag> {
->>>>>>> 5ed5cf2db97b02bd867d82a1513c790b646cb925
 public:
-//	typedef T value_type;
+	typedef geometry<line_tag, T, Dimension> base_type;
 
-	typedef typename vector_type<T, Dimension>::type vector_type;
-	typedef direction<Dimension> direction_type;
+	GK_GEOMETRY_BASE_TYPEDEF(base_type)
+
+typedef	direction<Dimension> direction_type;
 
 private:
 	template<typename Vector>
-	static vector_type Reference_(const Vector& v, direction_tag<GK::GK_2D>) {
+	static vector_type Reference_(const Vector& v, dimension_tag<GK::GK_2D>) {
 		return vector_type(v[GK::X], v[GK::Y]);
 	}
 
 	template<typename Vector>
-	static vector_type Reference_(const Vector& v, direction_tag<GK::GK_3D>) {
+	static vector_type Reference_(const Vector& v, dimension_tag<GK::GK_3D>) {
 		return vector_type(v[GK::X], v[GK::Y], v[GK::Z]);
 	}
 
@@ -59,7 +56,7 @@ public:
 	 * @brief Default contsruction.
 	 */
 	line() :
-			ref_(), direction_() {
+	ref_(), direction_() {
 	}
 
 	/**
@@ -67,28 +64,27 @@ public:
 	 * @param other An other object.
 	 */
 	line(const line& other) :
-			ref_(other.ref_), direction_(other) {
+	ref_(other.ref_), direction_(other) {
 
 	}
 
 	line(const vector_type& reference, const direction_type& direction) :
-			ref_(reference), direction_(direction) {
+	ref_(reference), direction_(direction) {
 	}
 
 	line(const vector_type& start, const vector_type& end) :
-			ref_(start), direction_(
-					vector_traits<vector_type>::begin(end - start)) {
+	ref_(start), direction_(start, end) {
 	}
 
 	template<typename Vector>
 	line(const Vector& reference, const direction_type& direction) :
-			ref_(line::Reference_(reference, dimension_tag<Dimension>())), direction_(
-					direction) {
+	ref_(line::Reference_(reference, dimension_tag<Dimension>())), direction_(
+			direction) {
 	}
 
 	template<typename Vector>
 	line(const Vector& start, const Vector& end) :
-			ref_(line::Reference_(start, dimension_tag<Dimension>())), direction_() {
+	ref_(line::Reference_(start, dimension_tag<Dimension>())), direction_() {
 	}
 
 	~line() {
@@ -111,7 +107,7 @@ public:
 	 * @brief Returns the direction.
 	 * @return
 	 */
-	const direction_type& direction() const {
+	const direction_type& dir() const {
 		return this->direction_;
 	}
 
@@ -119,7 +115,7 @@ public:
 	 * @brief Sets a direction.
 	 * @param d
 	 */
-	void direction(const direction_type& d) {
+	void dir(const direction_type& d) {
 		this->direction_ = d;
 	}
 
@@ -160,30 +156,32 @@ private:
  * @date 2015/12/01
  */
 template<typename T, std::size_t Dimension>
-class segment: geometry<segment_tag> {
+class segment: geometry<segment_tag, T, Dimension> {
 public:
-	typedef T value_type;
-	typedef typename vector_type<T, Dimension>::type vector_type;
-public:
+	typedef geometry<segment_tag, T, Dimension> base_type;
+
+	GK_GEOMETRY_BASE_TYPEDEF(base_type)
+
+public	:
 	segment() :
-			edge_() {
+	edge_() {
 	}
 
 	segment(const segment& other) :
-			edge_() {
+	edge_() {
 		this->edge_[GK::StartEdge] = other.edge_[GK::StartEdge];
 		this->edge_[GK::EndEdge] = other.edge_[GK::EndEdge];
 	}
 
 	segment(const vector_type& start, const vector_type& end) :
-			edge_() {
+	edge_() {
 		this->edge_[GK::StartEdge] = start;
 		this->edge_[GK::EndEdge] = end;
 	}
 
 	template<typename Vector>
 	segment(const Vector& start, const Vector& end) :
-			edge_() {
+	edge_() {
 		assign(start, this->edge_[GK::StartEdge]);
 		assign(end, this->edge_[GK::EndEdge]);
 	}
@@ -222,7 +220,7 @@ public:
 	template<typename Parameter>
 	vector_type operator()(const Parameter& t) const {
 		const vector_type v = this->edge_[GK::EndEdge]
-				- this->edge_[GK::StartEdge];
+		- this->edge_[GK::StartEdge];
 		return this->edge_[GK::StartEdge] + t * v;
 	}
 
@@ -248,14 +246,12 @@ direction<Dimension> direction_of(const line<T, Dimension>& l) {
 
 template<typename T, std::size_t Dimension>
 direction<Dimension> direction_of(const segment<T, Dimension>& l) {
-	const typename vector_type<T, Dimension>::type v = l[GK::EndEdge]
-			- l[GK::StartEdge];
-	return direction_of(v);
+	return direction_of(l[GK::StartEdge], l[GK::EndEdge]);
 }
 
 template<typename T, std::size_t Dimension>
 T length(const segment<T, Dimension>& l) {
-	const typename vector_type<T, Dimension>::type v = l.start() - l.end();
+	const typename segment<T, Dimension>::vector_type v = l.start() - l.end();
 	return norm(v);
 }
 
@@ -264,13 +260,14 @@ std::pair<T, T> domain(const segment<T, Dimension>&) {
 	return std::make_pair(T(GK_FLOAT_ZERO), T(GK_FLOAT_ONE));
 }
 
-template<typename Vector>
-aabb<Vector> boundary(const segment<Vector>& x) {
-	return aabb<Vector>(x.start(), x.end());
+template<typename T, std::size_t Dimension>
+aabb<typename segment<T, Dimension>::vector_type> boundary(
+		const segment<T, Dimension>& x) {
+	return aabb<typename segment<T, Dimension>::vector_type>(x.start(), x.end());
 }
 
 template<typename Vector>
-class xpolyline/*: public curve<curve_tag, Vector>*/{
+class polyline/*: public curve<curve_tag, Vector>*/{
 public:
 	typedef std::vector<Vector> container_type;
 	typedef Vector vector_type;
@@ -298,23 +295,23 @@ private:
 	}
 
 public:
-	xpolyline() :
+	polyline() :
 			X_() {
 
 	}
 
-	xpolyline(const xpolyline& other) :
+	polyline(const polyline& other) :
 			X_(other.X_) {
 
 	}
 
 	template<typename InputIterator>
 	polyline(InputIterator first, InputIterator last) :
-	X_(first, last) {
+			X_(first, last) {
 
 	}
 
-	~xpolyline() {
+	~polyline() {
 
 	}
 
@@ -355,7 +352,7 @@ public:
 	}
 
 	template<typename Parameter>
-	xpolyline subdivide(const Parameter& t, gkselection select = GK::Upper) {
+	polyline subdivide(const Parameter& t, gkselection select = GK::Upper) {
 
 	}
 
@@ -384,7 +381,7 @@ public:
 		return (Parameter(GK_FLOAT_ONE) - u) * this->X_[n - 1] + u * this->X_[n];
 	}
 
-	xpolyline& operator=(const xpolyline& rhs) {
+	polyline& operator=(const polyline& rhs) {
 		if (&rhs == this) {
 			return *this;
 		}

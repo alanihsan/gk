@@ -26,7 +26,7 @@ namespace gk {
  */
 class quaternion {
 public:
-	typedef gkfloat value_type;
+	typedef float_type value_type;
 
 	/**
 	 * @brief The enum of component numbers.
@@ -107,13 +107,6 @@ public:
 
 	value_type& w() {
 		return this->x_[W];
-	}
-
-	void set(gkfloat x, gkfloat y, gkfloat z, gkfloat w) {
-		this->x_[X] = x;
-		this->x_[Y] = y;
-		this->x_[Z] = z;
-		this->x_[W] = w;
 	}
 
 	value_type square_norm() const {
@@ -249,13 +242,13 @@ quaternion operator-(const quaternion& lhs, const quaternion& rhs) {
 	return dst;
 }
 
-quaternion operator*(const quaternion& lhs, gkfloat rhs) {
+quaternion operator*(const quaternion& lhs, float_type rhs) {
 	quaternion dst = lhs;
 	dst *= rhs;
 	return dst;
 }
 
-quaternion operator*(gkfloat lhs, const quaternion& rhs) {
+quaternion operator*(float_type lhs, const quaternion& rhs) {
 	return rhs * lhs;
 }
 
@@ -265,7 +258,7 @@ quaternion operator*(const quaternion& lhs, const quaternion& rhs) {
 	return dst;
 }
 
-quaternion operator/(const quaternion& lhs, gkfloat rhs) {
+quaternion operator/(const quaternion& lhs, float_type rhs) {
 	quaternion dst = lhs;
 	dst /= rhs;
 	return dst;
