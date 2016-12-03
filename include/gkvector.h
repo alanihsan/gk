@@ -25,8 +25,8 @@
 namespace gk {
 
 template<typename T, std::size_t Dimension>
-struct vector_dependence {
-	typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> vector_type;
+struct vector_type {
+	typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> type;
 };
 
 /**
@@ -221,6 +221,8 @@ public:
 	typedef float_type value_type;
 	typedef const value_type* const_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+
+	typedef Eigen::Matrix<value_type, 1, Dimension> vector_type;
 
 //	static const std::size_t Dimension = DimensionSize;
 //	static const std::size_t ElementSize = DimensionSize;

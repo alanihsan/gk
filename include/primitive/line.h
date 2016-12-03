@@ -34,11 +34,11 @@ namespace gk {
 template<typename T, std::size_t Dimension = GK::GK_3D>
 class line: public geometry<line_tag, T, Dimension> {
 public:
+	typedef T value_type;
 	typedef geometry<line_tag, T, Dimension> base_type;
+	typedef typename vector_type<T, Dimension>::type vector_type;
 
-	GK_GEOMETRY_BASE_TYPEDEF(base_type)
-
-typedef	direction<Dimension> direction_type;
+	typedef direction<Dimension> direction_type;
 
 private:
 	template<typename Vector>
@@ -56,7 +56,7 @@ public:
 	 * @brief Default contsruction.
 	 */
 	line() :
-	ref_(), direction_() {
+			ref_(), direction_() {
 	}
 
 	/**
@@ -64,27 +64,27 @@ public:
 	 * @param other An other object.
 	 */
 	line(const line& other) :
-	ref_(other.ref_), direction_(other) {
+			ref_(other.ref_), direction_(other) {
 
 	}
 
 	line(const vector_type& reference, const direction_type& direction) :
-	ref_(reference), direction_(direction) {
+			ref_(reference), direction_(direction) {
 	}
 
 	line(const vector_type& start, const vector_type& end) :
-	ref_(start), direction_(start, end) {
+			ref_(start), direction_(start, end) {
 	}
 
 	template<typename Vector>
 	line(const Vector& reference, const direction_type& direction) :
-	ref_(line::Reference_(reference, dimension_tag<Dimension>())), direction_(
-			direction) {
+			ref_(line::Reference_(reference, dimension_tag<Dimension>())), direction_(
+					direction) {
 	}
 
 	template<typename Vector>
 	line(const Vector& start, const Vector& end) :
-	ref_(line::Reference_(start, dimension_tag<Dimension>())), direction_() {
+			ref_(line::Reference_(start, dimension_tag<Dimension>())), direction_() {
 	}
 
 	~line() {
@@ -158,30 +158,29 @@ private:
 template<typename T, std::size_t Dimension>
 class segment: geometry<segment_tag, T, Dimension> {
 public:
-	typedef geometry<segment_tag, T, Dimension> base_type;
+	typedef T value_type;
+	typedef typename vector_type<T, Dimension>::type vector_type;
 
-	GK_GEOMETRY_BASE_TYPEDEF(base_type)
-
-public	:
+public:
 	segment() :
-	edge_() {
+			edge_() {
 	}
 
 	segment(const segment& other) :
-	edge_() {
+			edge_() {
 		this->edge_[GK::StartEdge] = other.edge_[GK::StartEdge];
 		this->edge_[GK::EndEdge] = other.edge_[GK::EndEdge];
 	}
 
 	segment(const vector_type& start, const vector_type& end) :
-	edge_() {
+			edge_() {
 		this->edge_[GK::StartEdge] = start;
 		this->edge_[GK::EndEdge] = end;
 	}
 
 	template<typename Vector>
 	segment(const Vector& start, const Vector& end) :
-	edge_() {
+			edge_() {
 		assign(start, this->edge_[GK::StartEdge]);
 		assign(end, this->edge_[GK::EndEdge]);
 	}
@@ -220,7 +219,7 @@ public	:
 	template<typename Parameter>
 	vector_type operator()(const Parameter& t) const {
 		const vector_type v = this->edge_[GK::EndEdge]
-		- this->edge_[GK::StartEdge];
+				- this->edge_[GK::StartEdge];
 		return this->edge_[GK::StartEdge] + t * v;
 	}
 

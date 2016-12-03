@@ -94,7 +94,6 @@ struct geometry;
 	struct geometry<Category, T, Dimension> { \
 		typedef Category category; \
 		typedef T value_type; \
-		typedef Eigen::Matrix<T, 1, Dimension, Eigen::RowMajor> vector_type; \
 };
 
 GK_GEOMETRY_BASE_TEMPLATE_CLASS(direction_tag)
@@ -120,9 +119,5 @@ struct geometry_traits {
 };
 
 } // namespace gk
-
-#define GK_GEOMETRY_BASE_TYPEDEF(Base) \
-	typedef typename Base::value_type value_type; \
-	typedef typename Base::vector_type vector_type;
 
 #endif /* GKGEOMETRY_H_ */
