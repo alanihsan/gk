@@ -36,96 +36,96 @@ struct vector_type {
  * @date 2016/02/24
  * @author Takuya Makimoto
  */
-template<typename Vector>
-struct vector_traits {
-	typedef typename Vector::value_type value_type; ///< Type of elements in a vector.
-
-	static const std::size_t Dimension = Vector::Dimension; ///< The dimension size of the vector space.
-	static const bool IsHomogeneous = false; ///<
-
-	typedef value_type* iterator;
-	typedef const value_type* const_iterator;
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const_iterator begin(const Vector& v) {
-		return v.begin();
-	}
-
-	static iterator begin(Vector& v) {
-		return v.begin();
-	}
-
-	static const_iterator end(const Vector& v) {
-		return v.end();
-	}
-
-	static iterator end(Vector& v) {
-		return v.end();
-	}
-
-	static const_reverse_iterator rbegin(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(v.end());
-	}
-
-	static reverse_iterator rbegin(Vector& v) {
-		return std::reverse_iterator<iterator>(v.end());
-	}
-
-	static const_reverse_iterator rend(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(v.begin());
-	}
-
-	static reverse_iterator rend(Vector& v) {
-		return std::reverse_iterator<iterator>(v.begin());
-	}
-};
-
-template<std::size_t DimensionSize, typename T>
-struct vector_traits<T[DimensionSize]> {
-	typedef T Vector[DimensionSize];
-	typedef T value_type;
-
-	static const std::size_t Dimension = DimensionSize;
-	static const bool IsHomogeneous = false;
-
-	typedef T* iterator;
-	typedef const T* const_iterator;
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
-	static const_iterator begin(const Vector& v) {
-		return v;
-	}
-
-	static iterator begin(Vector& v) {
-		return v;
-	}
-
-	static const_iterator end(const Vector& v) {
-		return v + DimensionSize;
-	}
-
-	static iterator end(Vector& v) {
-		return v + DimensionSize;
-	}
-
-	static const_reverse_iterator rbegin(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(end(v));
-	}
-
-	static reverse_iterator rbegin(Vector& v) {
-		return std::reverse_iterator<iterator>(end(v));
-	}
-
-	static const_reverse_iterator rend(const Vector& v) {
-		return std::reverse_iterator<const_iterator>(begin(v));
-	}
-
-	static reverse_iterator rend(Vector& v) {
-		return std::reverse_iterator<iterator>(begin(v));
-	}
-};
+//template<typename Vector>
+//struct vector_traits {
+//	typedef typename Vector::value_type value_type; ///< Type of elements in a vector.
+//
+//	static const std::size_t Dimension = Vector::Dimension; ///< The dimension size of the vector space.
+//	static const bool IsHomogeneous = false; ///<
+//
+//	typedef value_type* iterator;
+//	typedef const value_type* const_iterator;
+//	typedef std::reverse_iterator<iterator> reverse_iterator;
+//	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+//
+//	static const_iterator begin(const Vector& v) {
+//		return v.begin();
+//	}
+//
+//	static iterator begin(Vector& v) {
+//		return v.begin();
+//	}
+//
+//	static const_iterator end(const Vector& v) {
+//		return v.end();
+//	}
+//
+//	static iterator end(Vector& v) {
+//		return v.end();
+//	}
+//
+//	static const_reverse_iterator rbegin(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(v.end());
+//	}
+//
+//	static reverse_iterator rbegin(Vector& v) {
+//		return std::reverse_iterator<iterator>(v.end());
+//	}
+//
+//	static const_reverse_iterator rend(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(v.begin());
+//	}
+//
+//	static reverse_iterator rend(Vector& v) {
+//		return std::reverse_iterator<iterator>(v.begin());
+//	}
+//};
+//
+//template<std::size_t DimensionSize, typename T>
+//struct vector_traits<T[DimensionSize]> {
+//	typedef T Vector[DimensionSize];
+//	typedef T value_type;
+//
+//	static const std::size_t Dimension = DimensionSize;
+//	static const bool IsHomogeneous = false;
+//
+//	typedef T* iterator;
+//	typedef const T* const_iterator;
+//	typedef std::reverse_iterator<iterator> reverse_iterator;
+//	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+//
+//	static const_iterator begin(const Vector& v) {
+//		return v;
+//	}
+//
+//	static iterator begin(Vector& v) {
+//		return v;
+//	}
+//
+//	static const_iterator end(const Vector& v) {
+//		return v + DimensionSize;
+//	}
+//
+//	static iterator end(Vector& v) {
+//		return v + DimensionSize;
+//	}
+//
+//	static const_reverse_iterator rbegin(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(end(v));
+//	}
+//
+//	static reverse_iterator rbegin(Vector& v) {
+//		return std::reverse_iterator<iterator>(end(v));
+//	}
+//
+//	static const_reverse_iterator rend(const Vector& v) {
+//		return std::reverse_iterator<const_iterator>(begin(v));
+//	}
+//
+//	static reverse_iterator rend(Vector& v) {
+//		return std::reverse_iterator<iterator>(begin(v));
+//	}
+//};
 
 template<typename Vector1, typename Vector2>
 typename multiplies_result<typename vector_traits<Vector1>::value_type,
@@ -420,8 +420,8 @@ direction<vector_traits<Vector>::Dimension> normalize(const Vector& v) {
  * @return Returns the magnitude of the direction, 1.
  */
 template<size_t Dimension>
-typename direction<Dimension>::value_type norm(const direction<Dimension>&) {
-	return typename direction<Dimension>::value_type(GK_FLOAT_ONE);
+float_type norm(const direction<Dimension>&) {
+	return float_type(GK_FLOAT_ONE);
 }
 
 namespace impl {
@@ -495,72 +495,114 @@ private:
 	basis& operator=(const basis&);
 };
 
-/**
- * @brief
- * @tparam Vector
- * @tparam Angle
- *
- * @author Takuya Makimoto
- * @date 2016/01/20
- */
-template<typename Vector, typename Angle>
-struct rotate {
-	typedef Vector argument_type;
-	typedef Vector result_type;
+template<typename Vector>
+Vector rotate(const Vector& v, float_type angle) {
+	const float_type sin = std::sin(angle);
+	const float_type cos = std::cos(angle);
 
-	const Angle angle;
+	Vector r;
+	r[GK::X] = v[GK::X] * cos - v[GK::Y] * sin;
+	r[GK::Y] = v[GK::X] * sin + v[GK::Y] * cos;
+	return r;
+}
 
-	rotate() :
-			angle() {
-	}
+template<typename Vector>
+Vector rotate(const Vector& v,
+		const typename vector_type<float_type, GK::GK_3D>::type& angle) {
 
-	rotate(const Angle& theta) :
-			angle(theta) {
-	}
+	const float_type theta = norm(angle);
+	const direction<GK::GK_3D> axis(angle);
 
-	Vector operator()(const Vector& v) const {
-		return rotate_(v, dimension_tag<vector_traits<Vector>::Dimension>());
-	}
+	const float_type sin = std::sin(0.5 * theta);
+	const float_type cos = std::cos(0.5 * theta);
 
-private:
-	Vector rotate_(const Vector& v, dimension_tag<GK::GK_2D>) const {
-		const float_type sin = std::sin(this->angle);
-		const float_type cos = std::cos(this->angle);
+	const quaternion Q(sin * axis[GK::X], sin * axis[GK::Y], sin * axis[GK::Z],
+			cos);
 
-		Vector r;
-		r[GK::X] = v[GK::X] * cos - v[GK::Y] * sin;
-		r[GK::Y] = v[GK::X] * sin + v[GK::Y] * cos;
-		return r;
-	}
+	typedef typename vector_traits<Vector>::value_type value_type;
+	const value_type unit = value_type(GK_FLOAT_ONE);
 
-	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
-		const float_type theta = norm(this->angle);
-		const direction<GK::GK_3D> axis(this->angle);
+	const typename vector_type<float_type, GK::GK_3D>::type u = v / unit;
+	const quaternion P(u, quaternion::value_type(GK_FLOAT_ZERO));
 
-		const float_type sin = std::sin(0.5 * theta);
-		const float_type cos = std::cos(0.5 * theta);
+	//		const quaternion R = conj(Q) * P * Q;
+	const quaternion R = Q * P * conj(Q);
 
-		const quaternion Q(sin * axis[GK::X], sin * axis[GK::Y],
-				sin * axis[GK::Z], cos);
+	Vector r;
+	r[GK::X] = R[quaternion::X] * unit;
+	r[GK::Y] = R[quaternion::Y] * unit;
+	r[GK::Z] = R[quaternion::Z] * unit;
 
-		const typename vector_traits<Vector>::value_type unit =
-				typename vector_traits<Vector>::value_type(GK_FLOAT_ONE);
+	return r;
+}
 
-		const quaternion P(v / unit, quaternion::value_type(GK_FLOAT_ZERO));
+///**
+// * @brief
+// * @tparam Vector
+// * @tparam Angle
+// *
+// * @author Takuya Makimoto
+// * @date 2016/01/20
+// */
+//template<typename Angle>
+//struct rotate {
+//	const Angle angle;
+//
+//	rotate() :
+//			angle() {
+//	}
+//
+//	rotate(const Angle& theta) :
+//			angle(theta) {
+//	}
+//
+//	template<typename Vector, typename Axis>
+//	Vector operator()(const Vector& v) const {
+//		return rotate_(v, dimension_tag<vector_traits<Vector>::Dimension>());
+//	}
+//
+//private:
+//	template<typename Vector>
+//	Vector rotate_(const Vector& v, dimension_tag<GK::GK_2D>) const {
+//		const float_type sin = std::sin(this->angle);
+//		const float_type cos = std::cos(this->angle);
+//
+//		Vector r;
+//		r[GK::X] = v[GK::X] * cos - v[GK::Y] * sin;
+//		r[GK::Y] = v[GK::X] * sin + v[GK::Y] * cos;
+//		return r;
+//	}
+//
+//	template<typename Vector>
+//	Vector rotate_(const Vector& v, dimension_tag<GK::GK_3D>) const {
+//		const float_type theta = norm(this->angle);
+//		const direction<GK::GK_3D> axis(this->angle);
+//
+//		const float_type sin = std::sin(0.5 * theta);
+//		const float_type cos = std::cos(0.5 * theta);
+//
+//		const quaternion Q(sin * axis[GK::X], sin * axis[GK::Y],
+//				sin * axis[GK::Z], cos);
+//
+//		const typename vector_traits<Vector>::value_type unit =
+//				typename vector_traits<Vector>::value_type(GK_FLOAT_ONE);
+//
+//		const typename vector_type<float_type, GK::GK_3D>::type u = v / unit;
+//		const quaternion P(u, quaternion::value_type(GK_FLOAT_ZERO));
+//
+////		const quaternion R = conj(Q) * P * Q;
+//		const quaternion R = Q * P * conj(Q);
+//
+//		Vector r;
+//		r[GK::X] = R[quaternion::X] * unit;
+//		r[GK::Y] = R[quaternion::Y] * unit;
+//		r[GK::Z] = R[quaternion::Z] * unit;
+//
+//		return r;
+//	}
+//};
 
-//		const quaternion R = conj(Q) * P * Q;
-		const quaternion R = Q * P * conj(Q);
-
-		Vector r;
-		r[GK::X] = R[quaternion::X] * unit;
-		r[GK::Y] = R[quaternion::Y] * unit;
-		r[GK::Z] = R[quaternion::Z] * unit;
-
-		return r;
-	}
-};
-
-}  // namespace gk
+}// namespace gk
 
 #if defined(GK_EIGEN_ROWVECTOR) || defined(GK_EIGEN_COLUMNVECTOR)
 #include "eigen/eigen_vector.h"
